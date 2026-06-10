@@ -1,6 +1,6 @@
 {
-    "name": "devs",
-    "short_name": "devs",
+    "name": "Devs",
+    "short_name": "Devs",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
