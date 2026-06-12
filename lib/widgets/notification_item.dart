@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 
@@ -15,15 +16,15 @@ class NotificationItem extends StatelessWidget {
   IconData _getIconForType() {
     switch (notification.type) {
       case 'like':
-        return Icons.favorite_rounded;
+        return LucideIcons.heart;
       case 'comment':
-        return Icons.chat_bubble_rounded;
+        return LucideIcons.messageSquare;
       case 'follow':
-        return Icons.person_add_rounded;
+        return LucideIcons.userPlus;
       case 'mention':
-        return Icons.alternate_email_rounded;
+        return LucideIcons.atSign;
       default:
-        return Icons.notifications_rounded;
+        return LucideIcons.bell;
     }
   }
 
