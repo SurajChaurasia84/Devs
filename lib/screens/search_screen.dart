@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -101,7 +102,7 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
-                  Icon(Icons.search_rounded, color: textSecondary, size: 20),
+                  Icon(LucideIcons.search, color: textSecondary, size: 20),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
@@ -119,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
                   if (_searchQuery.isNotEmpty)
                     GestureDetector(
                       onTap: () => _searchController.clear(),
-                      child: Icon(Icons.cancel_rounded, color: textSecondary, size: 18),
+                      child: Icon(LucideIcons.xCircle, color: textSecondary, size: 18),
                     ),
                 ],
               ),
@@ -384,7 +385,7 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.search_off_rounded, size: 40, color: textSecondary.withOpacity(0.5)),
+          Icon(LucideIcons.search, size: 40, color: textSecondary.withValues(alpha: 0.5)),
           const SizedBox(height: 12),
           Text(
             message,
