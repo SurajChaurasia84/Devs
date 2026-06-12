@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -19,7 +20,7 @@ class CommunitiesScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           'Communities',
-          style: TextStyle(
+          style: GoogleFonts.outfit(
             color: textPrimary,
             fontWeight: FontWeight.bold,
           ),
