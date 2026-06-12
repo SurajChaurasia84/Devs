@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import '../theme/app_theme.dart';
 
 class SkillTag extends StatelessWidget {
@@ -26,7 +27,7 @@ class SkillTag extends StatelessWidget {
     Color textCol;
 
     if (isActive) {
-      bg = AppTheme.primaryBlue.withOpacity(0.12);
+      bg = AppTheme.primaryBlue.withValues(alpha: 0.12);
       borderCol = AppTheme.primaryBlue;
       textCol = AppTheme.primaryBlue;
     } else {
@@ -61,9 +62,9 @@ class SkillTag extends StatelessWidget {
               GestureDetector(
                 onTap: onDelete,
                 child: Icon(
-                  Icons.close_rounded,
+                  Iconsax.close_circle,
                   size: 14,
-                  color: textCol.withOpacity(0.7),
+                  color: textCol.withValues(alpha: 0.7),
                 ),
               ),
             ]
