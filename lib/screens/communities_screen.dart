@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -111,10 +112,10 @@ class CommunityDetailScreen extends StatelessWidget {
             top: 8,
             child: SafeArea(
               child: CircleAvatar(
-                backgroundColor: isDark ? Colors.black.withOpacity(0.6) : Colors.white.withOpacity(0.8),
+                backgroundColor: isDark ? Colors.black.withValues(alpha: 0.6) : Colors.white.withValues(alpha: 0.8),
                 radius: 18,
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back_rounded, size: 18),
+                  icon: const Icon(LucideIcons.arrowLeft, size: 18),
                   color: isDark ? Colors.white : Colors.black,
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -237,9 +238,9 @@ class CommunityDetailScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.chat_bubble_outline_rounded,
+                                LucideIcons.messageSquare,
                                 size: 36,
-                                color: textSecondary.withOpacity(0.5),
+                                color: textSecondary.withValues(alpha: 0.5),
                               ),
                               const SizedBox(height: 12),
                               Text(
