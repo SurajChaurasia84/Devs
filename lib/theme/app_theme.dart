@@ -42,14 +42,18 @@ class AppTheme {
         onBackground: darkTextPrimary,
         onSurface: darkTextPrimary,
         outline: darkBorder,
+        surfaceTint: Colors.transparent,
+      ),
+      cardTheme: const CardThemeData(
+        surfaceTintColor: Colors.transparent,
       ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).copyWith(
-        titleLarge: GoogleFonts.inter(
+        titleLarge: GoogleFonts.outfit(
           color: darkTextPrimary,
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        titleMedium: GoogleFonts.inter(
+        titleMedium: GoogleFonts.outfit(
           color: darkTextPrimary,
           fontSize: 16,
           fontWeight: FontWeight.w600,
@@ -62,7 +66,7 @@ class AppTheme {
           color: darkTextSecondary,
           fontSize: 14,
         ),
-        labelLarge: GoogleFonts.inter(
+        labelLarge: GoogleFonts.outfit(
           color: darkTextPrimary,
           fontSize: 12,
           fontWeight: FontWeight.bold,
@@ -77,6 +81,7 @@ class AppTheme {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
+        surfaceTintColor: Colors.transparent,
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: darkBg,
@@ -109,14 +114,18 @@ class AppTheme {
         onBackground: lightTextPrimary,
         onSurface: lightTextPrimary,
         outline: lightBorder,
+        surfaceTint: Colors.transparent,
+      ),
+      cardTheme: const CardThemeData(
+        surfaceTintColor: Colors.transparent,
       ),
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme).copyWith(
-        titleLarge: GoogleFonts.inter(
+        titleLarge: GoogleFonts.outfit(
           color: lightTextPrimary,
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
-        titleMedium: GoogleFonts.inter(
+        titleMedium: GoogleFonts.outfit(
           color: lightTextPrimary,
           fontSize: 16,
           fontWeight: FontWeight.w600,
@@ -129,7 +138,7 @@ class AppTheme {
           color: lightTextSecondary,
           fontSize: 14,
         ),
-        labelLarge: GoogleFonts.inter(
+        labelLarge: GoogleFonts.outfit(
           color: lightTextPrimary,
           fontSize: 12,
           fontWeight: FontWeight.bold,
@@ -144,6 +153,7 @@ class AppTheme {
           fontSize: 20,
           fontWeight: FontWeight.bold,
         ),
+        surfaceTintColor: Colors.transparent,
       ),
       bottomNavigationBarTheme: const BottomNavigationBarThemeData(
         backgroundColor: lightBg,
