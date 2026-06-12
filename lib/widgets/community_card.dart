@@ -64,7 +64,7 @@ class CommunityCard extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: AppTheme.primaryBlue.withOpacity(0.15),
+                color: AppTheme.primaryBlue.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: const Text(
