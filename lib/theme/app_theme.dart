@@ -70,11 +70,11 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: darkBg,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
-        titleTextStyle: TextStyle(
+        iconTheme: const IconThemeData(color: Colors.white),
+        titleTextStyle: GoogleFonts.outfit(
           color: darkTextPrimary,
           fontSize: 20,
           fontWeight: FontWeight.bold,
@@ -140,11 +140,11 @@ class AppTheme {
           fontWeight: FontWeight.bold,
         ),
       ),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         backgroundColor: lightBg,
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.black),
-        titleTextStyle: TextStyle(
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: GoogleFonts.outfit(
           color: lightTextPrimary,
           fontSize: 20,
           fontWeight: FontWeight.bold,
