@@ -35,11 +35,9 @@ class AppTheme {
       colorScheme: const ColorScheme.dark(
         primary: primaryBlue,
         secondary: primaryBlue,
-        background: darkBg,
         surface: darkCard,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
-        onBackground: darkTextPrimary,
         onSurface: darkTextPrimary,
         outline: darkBorder,
         surfaceTint: Colors.transparent,
@@ -107,11 +105,9 @@ class AppTheme {
       colorScheme: const ColorScheme.light(
         primary: primaryBlue,
         secondary: primaryBlue,
-        background: lightBg,
         surface: lightCard,
         onPrimary: Colors.white,
         onSecondary: Colors.white,
-        onBackground: lightTextPrimary,
         onSurface: lightTextPrimary,
         outline: lightBorder,
         surfaceTint: Colors.transparent,
