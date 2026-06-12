@@ -118,7 +118,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
       appBar: AppBar(
         title: Text(
           'Create Post',
-          style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold),
+          style: GoogleFonts.outfit(color: textPrimary, fontWeight: FontWeight.bold),
         ),
         actions: [
           Padding(
