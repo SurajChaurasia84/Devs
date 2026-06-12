@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -224,9 +226,9 @@ class HomeScreen extends StatelessWidget {
                 color: AppTheme.primaryBlue,
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: const Text(
+              child: Text(
                 'D',
-                style: TextStyle(
+                style: GoogleFonts.outfit(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,
                   fontSize: 16,
@@ -237,7 +239,7 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               'Devs',
-              style: TextStyle(
+              style: GoogleFonts.outfit(
                 color: textPrimary,
                 fontWeight: FontWeight.w900,
                 fontSize: 18,
@@ -263,11 +265,28 @@ class HomeScreen extends StatelessWidget {
           
           // Activity bell notification page access
           IconButton(
-            icon: const Icon(LucideIcons.bell, size: 22),
+            icon: const Icon(LucideIcons.bell, size: 20),
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+              );
+            },
+          ),
+
+          // Message action 
+          IconButton(
+            icon: const Icon(Iconsax.message, size: 20),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Direct Messages coming soon!', style: TextStyle(color: Colors.white, fontSize: 13)),
+                  backgroundColor: AppTheme.primaryBlue,
+                  duration: const Duration(seconds: 1),
+                  behavior: SnackBarBehavior.floating,
+                  margin: const EdgeInsets.all(16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
               );
             },
           ),
