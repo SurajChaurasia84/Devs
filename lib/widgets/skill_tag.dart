@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../theme/app_theme.dart';
 
 class SkillTag extends StatelessWidget {
@@ -62,7 +62,7 @@ class SkillTag extends StatelessWidget {
               GestureDetector(
                 onTap: onDelete,
                 child: Icon(
-                  Iconsax.close_circle,
+                  LucideIcons.x,
                   size: 14,
                   color: textCol.withValues(alpha: 0.7),
                 ),
