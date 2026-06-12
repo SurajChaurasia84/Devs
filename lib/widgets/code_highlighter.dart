@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../theme/app_theme.dart';
 
 class CodeHighlighter extends StatefulWidget {
@@ -167,11 +168,11 @@ class _CodeHighlighterState extends State<CodeHighlighter> {
                     duration: const Duration(milliseconds: 200),
                     padding: const EdgeInsets.all(4),
                     decoration: BoxDecoration(
-                      color: _copied ? AppTheme.primaryBlue.withOpacity(0.1) : Colors.transparent,
+                      color: _copied ? AppTheme.primaryBlue.withValues(alpha: 0.1) : Colors.transparent,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Icon(
-                      _copied ? Icons.check_rounded : Icons.copy_all_rounded,
+                      _copied ? LucideIcons.check : LucideIcons.copy,
                       size: 14,
                       color: _copied
                           ? AppTheme.primaryBlue
