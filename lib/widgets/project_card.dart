@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import 'skill_tag.dart';
@@ -60,7 +61,7 @@ class ProjectCard extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.lock_rounded, size: 7, color: AppTheme.primaryBlue),
+                        const Icon(Iconsax.lock, size: 7, color: AppTheme.primaryBlue),
                         const SizedBox(width: 3),
                         Text(
                           '${project.id}.devs.app/preview',
@@ -89,27 +90,27 @@ class ProjectCard extends StatelessWidget {
                 // Code structures
                 Row(
                   children: [
-                    Container(width: 24, height: 6, decoration: BoxDecoration(color: AppTheme.primaryBlue.withOpacity(0.8), borderRadius: BorderRadius.circular(2))),
+                    Container(width: 24, height: 6, decoration: BoxDecoration(color: AppTheme.primaryBlue.withValues(alpha: 0.8), borderRadius: BorderRadius.circular(2))),
                     const SizedBox(width: 4),
-                    Container(width: 50, height: 6, decoration: BoxDecoration(color: textSecondary.withOpacity(0.3), borderRadius: BorderRadius.circular(2))),
+                    Container(width: 50, height: 6, decoration: BoxDecoration(color: textSecondary.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2))),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
                     const SizedBox(width: 8),
-                    Container(width: 14, height: 6, decoration: BoxDecoration(color: AppTheme.primaryBlue.withOpacity(0.5), borderRadius: BorderRadius.circular(2))),
+                    Container(width: 14, height: 6, decoration: BoxDecoration(color: AppTheme.primaryBlue.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(2))),
                     const SizedBox(width: 4),
-                    Container(width: 70, height: 6, decoration: BoxDecoration(color: textSecondary.withOpacity(0.2), borderRadius: BorderRadius.circular(2))),
+                    Container(width: 70, height: 6, decoration: BoxDecoration(color: textSecondary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(2))),
                   ],
                 ),
                 const SizedBox(height: 6),
                 Row(
                   children: [
                     const SizedBox(width: 16),
-                    Container(width: 30, height: 6, decoration: BoxDecoration(color: textPrimary.withOpacity(0.7), borderRadius: BorderRadius.circular(2))),
+                    Container(width: 30, height: 6, decoration: BoxDecoration(color: textPrimary.withValues(alpha: 0.7), borderRadius: BorderRadius.circular(2))),
                     const SizedBox(width: 4),
-                    Container(width: 20, height: 6, decoration: BoxDecoration(color: AppTheme.primaryBlue.withOpacity(0.8), borderRadius: BorderRadius.circular(2))),
+                    Container(width: 20, height: 6, decoration: BoxDecoration(color: AppTheme.primaryBlue.withValues(alpha: 0.8), borderRadius: BorderRadius.circular(2))),
                   ],
                 ),
               ],
@@ -120,8 +121,8 @@ class ProjectCard extends StatelessWidget {
             right: 12,
             bottom: 8,
             child: Icon(
-              Icons.terminal_rounded,
-              color: AppTheme.primaryBlue.withOpacity(0.25),
+              Iconsax.code,
+              color: AppTheme.primaryBlue.withValues(alpha: 0.25),
               size: 28,
             ),
           ),
@@ -200,7 +201,7 @@ class ProjectCard extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.code_rounded, size: 14),
+                        icon: const Icon(Iconsax.github, size: 14),
                         label: const Text('GitHub', style: TextStyle(fontSize: 12)),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: textPrimary,
@@ -223,7 +224,7 @@ class ProjectCard extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: const Icon(Icons.launch_rounded, size: 14),
+                        icon: const Icon(Iconsax.export, size: 14),
                         label: const Text('Demo', style: TextStyle(fontSize: 12)),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
