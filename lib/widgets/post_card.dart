@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import 'code_highlighter.dart';
@@ -97,7 +98,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.code_rounded, size: 8, color: AppTheme.primaryBlue),
+                      const Icon(LucideIcons.code, size: 8, color: AppTheme.primaryBlue),
                       const SizedBox(width: 4),
                       Text(
                         'dashboard_view.dart',
@@ -130,13 +131,13 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(width: 15, height: 4, decoration: BoxDecoration(color: AppTheme.primaryBlue.withOpacity(0.4), borderRadius: BorderRadius.circular(1))),
+                      Container(width: 15, height: 4, decoration: BoxDecoration(color: AppTheme.primaryBlue.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(1))),
                       const SizedBox(height: 4),
-                      Container(width: 25, height: 4, decoration: BoxDecoration(color: textSecondary.withOpacity(0.2), borderRadius: BorderRadius.circular(1))),
+                      Container(width: 25, height: 4, decoration: BoxDecoration(color: textSecondary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(1))),
                       const SizedBox(height: 4),
-                      Container(width: 20, height: 4, decoration: BoxDecoration(color: textSecondary.withOpacity(0.2), borderRadius: BorderRadius.circular(1))),
+                      Container(width: 20, height: 4, decoration: BoxDecoration(color: textSecondary.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(1))),
                       const SizedBox(height: 4),
-                      Container(width: 28, height: 4, decoration: BoxDecoration(color: AppTheme.primaryBlue.withOpacity(0.4), borderRadius: BorderRadius.circular(1))),
+                      Container(width: 28, height: 4, decoration: BoxDecoration(color: AppTheme.primaryBlue.withValues(alpha: 0.4), borderRadius: BorderRadius.circular(1))),
                     ],
                   ),
                 ),
@@ -153,7 +154,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(width: 32, height: 8, decoration: BoxDecoration(color: AppTheme.primaryBlue, borderRadius: BorderRadius.circular(2))),
-                            Container(width: 12, height: 8, decoration: BoxDecoration(color: textSecondary.withOpacity(0.3), borderRadius: BorderRadius.circular(2))),
+                            Container(width: 12, height: 8, decoration: BoxDecoration(color: textSecondary.withValues(alpha: 0.3), borderRadius: BorderRadius.circular(2))),
                           ],
                         ),
                         const SizedBox(height: 8),
@@ -181,13 +182,13 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                                     Container(
                                       width: 14,
                                       height: 3,
-                                      color: textSecondary.withOpacity(0.4),
+                                      color: textSecondary.withValues(alpha: 0.4),
                                     ),
                                     const SizedBox(height: 3),
                                     Container(
                                       width: 22,
                                       height: 6,
-                                      color: index == 1 ? AppTheme.primaryBlue : textSecondary.withOpacity(0.2),
+                                      color: index == 1 ? AppTheme.primaryBlue : textSecondary.withValues(alpha: 0.2),
                                     ),
                                   ],
                                 ),
@@ -215,7 +216,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.check_circle_outline_rounded, size: 7, color: AppTheme.primaryBlue),
+                    const Icon(LucideIcons.checkCircle, size: 7, color: AppTheme.primaryBlue),
                     const SizedBox(width: 3),
                     Text(
                       'Ready',
@@ -303,7 +304,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
                               decoration: BoxDecoration(
-                                color: AppTheme.primaryBlue.withOpacity(0.1),
+                                color: AppTheme.primaryBlue.withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -388,7 +389,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                 child: Row(
                   children: [
                     Icon(
-                      Icons.folder_open_rounded,
+                      LucideIcons.folder,
                       color: AppTheme.primaryBlue,
                       size: 28,
                     ),
@@ -420,7 +421,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                     ),
                     const SizedBox(width: 8),
                     Icon(
-                      Icons.chevron_right_rounded,
+                      LucideIcons.chevronRight,
                       color: textSecondary,
                     ),
                   ],
@@ -450,7 +451,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                       ScaleTransition(
                         scale: _likeScale,
                         child: Icon(
-                          widget.post.isLiked ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                          LucideIcons.heart,
                           size: 18,
                           color: widget.post.isLiked ? AppTheme.primaryBlue : textSecondary,
                         ),
@@ -474,7 +475,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                   child: Row(
                     children: [
                       Icon(
-                        Icons.chat_bubble_outline_rounded,
+                        LucideIcons.messageSquare,
                         size: 17,
                         color: textSecondary,
                       ),
@@ -496,7 +497,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                   child: Row(
                     children: [
                       Icon(
-                        widget.post.isSaved ? Icons.bookmark_rounded : Icons.bookmark_outline_rounded,
+                        LucideIcons.bookmark,
                         size: 18,
                         color: widget.post.isSaved ? AppTheme.primaryBlue : textSecondary,
                       ),
@@ -518,7 +519,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                   child: Row(
                     children: [
                       Icon(
-                        Icons.share_outlined,
+                        LucideIcons.share2,
                         size: 16,
                         color: textSecondary,
                       ),
