@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 import 'communities_screen.dart';
@@ -65,15 +65,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 // 1. Home
                 _buildNavItem(
                   index: 0,
-                  activeIcon: Iconsax.home,
-                  inactiveIcon: Iconsax.home,
+                  activeIcon: LucideIcons.home,
+                  inactiveIcon: LucideIcons.home,
                   label: 'Home',
                 ),
                 // 2. Communities
                 _buildNavItem(
                   index: 1,
-                  activeIcon: Iconsax.people,
-                  inactiveIcon: Iconsax.people,
+                  activeIcon: LucideIcons.users,
+                  inactiveIcon: LucideIcons.users,
                   label: 'Groups',
                 ),
                 // 3. Create (Middle Accent button)
@@ -81,15 +81,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 // 4. Search
                 _buildNavItem(
                   index: 3,
-                  activeIcon: Iconsax.search_normal,
-                  inactiveIcon: Iconsax.search_normal,
+                  activeIcon: LucideIcons.search,
+                  inactiveIcon: LucideIcons.search,
                   label: 'Search',
                 ),
                 // 5. Profile
                 _buildNavItem(
                   index: 4,
-                  activeIcon: Iconsax.user,
-                  inactiveIcon: Iconsax.user,
+                  activeIcon: LucideIcons.user,
+                  inactiveIcon: LucideIcons.user,
                   label: 'Profile',
                 ),
               ],
@@ -117,8 +117,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       // Profile Tab: Instagram-style circular avatar
       final borderCol = isSelected ? activeColor : (isDark ? AppTheme.darkBorder : AppTheme.lightBorder);
       childWidget = Container(
-        width: 26,
-        height: 26,
+        width: 34,
+        height: 34,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
@@ -134,8 +134,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           alignment: Alignment.center,
           child: Icon(
-            Iconsax.user,
-            size: 13,
+            LucideIcons.user,
+            size: 16,
             color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
           ),
         ),
@@ -144,7 +144,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       childWidget = Icon(
         isSelected ? activeIcon : inactiveIcon,
         color: isSelected ? activeColor : inactiveColor,
-        size: 22,
+        size: 26,
       );
     }
 
@@ -153,7 +153,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
         width: 60,
-        height: 40,
+        height: 48,
         child: Center(
           child: childWidget,
         ),
@@ -167,8 +167,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       onTap: () => _onItemTapped(2),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        width: 36,
-        height: 36,
+        width: 40,
+        height: 40,
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : AppTheme.primaryBlue,
           shape: BoxShape.circle,
@@ -181,9 +181,9 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ],
         ),
         child: Icon(
-          Iconsax.add,
+          LucideIcons.plus,
           color: isSelected ? AppTheme.primaryBlue : Colors.white,
-          size: 22,
+          size: 26,
         ),
       ),
     );
