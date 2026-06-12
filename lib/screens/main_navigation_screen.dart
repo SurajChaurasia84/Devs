@@ -110,30 +110,51 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final activeColor = AppTheme.primaryBlue;
     final inactiveColor = isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary;
 
+    Widget childWidget;
+    
+    if (index == 4) {
+      // Profile Tab: Instagram-style circular avatar
+      final borderCol = isSelected ? activeColor : (isDark ? AppTheme.darkBorder : AppTheme.lightBorder);
+      childWidget = Container(
+        width: 32,
+        height: 32,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          border: Border.all(
+            color: borderCol,
+            width: isSelected ? 2 : 1.5,
+          ),
+        ),
+        padding: const EdgeInsets.all(1.5),
+        child: Container(
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF222222) : const Color(0xFFE1E8ED),
+            shape: BoxShape.circle,
+          ),
+          alignment: Alignment.center,
+          child: Icon(
+            Icons.person_rounded,
+            size: 16,
+            color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
+          ),
+        ),
+      );    } else {
+      // Standard Tab: Icon
+      childWidget = Icon(
+        isSelected ? activeIcon : inactiveIcon,
+        color: isSelected ? activeColor : inactiveColor,
+        size: 28,
+      );
+    }
+
     return GestureDetector(
       onTap: () => _onItemTapped(index),
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
         width: 60,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isSelected ? activeIcon : inactiveIcon,
-              color: isSelected ? activeColor : inactiveColor,
-              size: 24,
-            ),
-            const SizedBox(height: 2),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? activeColor : inactiveColor,
-                fontSize: 9,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-              ),
-            ),
-          ],
+        height: 48,
+        child: Center(
+          child: childWidget,
         ),
       ),
     );
@@ -161,7 +182,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         child: Icon(
           Icons.add_rounded,
           color: isSelected ? AppTheme.primaryBlue : Colors.white,
-          size: 26,
+          size: 28,
         ),
       ),
     );
