@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iconsax/iconsax.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 import 'communities_screen.dart';
@@ -64,15 +65,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 // 1. Home
                 _buildNavItem(
                   index: 0,
-                  activeIcon: Icons.home_rounded,
-                  inactiveIcon: Icons.home_outlined,
+                  activeIcon: Iconsax.home,
+                  inactiveIcon: Iconsax.home,
                   label: 'Home',
                 ),
                 // 2. Communities
                 _buildNavItem(
                   index: 1,
-                  activeIcon: Icons.groups_rounded,
-                  inactiveIcon: Icons.groups_outlined,
+                  activeIcon: Iconsax.people,
+                  inactiveIcon: Iconsax.people,
                   label: 'Groups',
                 ),
                 // 3. Create (Middle Accent button)
@@ -80,15 +81,15 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 // 4. Search
                 _buildNavItem(
                   index: 3,
-                  activeIcon: Icons.search_rounded,
-                  inactiveIcon: Icons.search_rounded, // search is solid usually
+                  activeIcon: Iconsax.search_normal,
+                  inactiveIcon: Iconsax.search_normal,
                   label: 'Search',
                 ),
                 // 5. Profile
                 _buildNavItem(
                   index: 4,
-                  activeIcon: Icons.person_rounded,
-                  inactiveIcon: Icons.person_outline_rounded,
+                  activeIcon: Iconsax.user,
+                  inactiveIcon: Iconsax.user,
                   label: 'Profile',
                 ),
               ],
@@ -116,8 +117,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       // Profile Tab: Instagram-style circular avatar
       final borderCol = isSelected ? activeColor : (isDark ? AppTheme.darkBorder : AppTheme.lightBorder);
       childWidget = Container(
-        width: 32,
-        height: 32,
+        width: 26,
+        height: 26,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
@@ -133,8 +134,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           alignment: Alignment.center,
           child: Icon(
-            Icons.person_rounded,
-            size: 16,
+            Iconsax.user,
+            size: 13,
             color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
           ),
         ),
@@ -143,7 +144,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       childWidget = Icon(
         isSelected ? activeIcon : inactiveIcon,
         color: isSelected ? activeColor : inactiveColor,
-        size: 28,
+        size: 22,
       );
     }
 
@@ -152,7 +153,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       behavior: HitTestBehavior.opaque,
       child: SizedBox(
         width: 60,
-        height: 48,
+        height: 40,
         child: Center(
           child: childWidget,
         ),
@@ -166,23 +167,23 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       onTap: () => _onItemTapped(2),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        width: 44,
-        height: 44,
+        width: 36,
+        height: 36,
         decoration: BoxDecoration(
           color: isSelected ? Colors.white : AppTheme.primaryBlue,
           shape: BoxShape.circle,
           boxShadow: [
             BoxShadow(
-              color: AppTheme.primaryBlue.withOpacity(0.3),
+              color: AppTheme.primaryBlue.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
           ],
         ),
         child: Icon(
-          Icons.add_rounded,
+          Iconsax.add,
           color: isSelected ? AppTheme.primaryBlue : Colors.white,
-          size: 28,
+          size: 22,
         ),
       ),
     );
