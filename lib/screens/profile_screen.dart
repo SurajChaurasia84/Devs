@@ -113,24 +113,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         decoration: BoxDecoration(
                           color: theme.scaffoldBackgroundColor,
                           shape: BoxShape.circle,
-                          border: Border.all(color: borderCol, width: 3),
+                          border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
                         ),
                         alignment: Alignment.center,
                         child: Container(
                           width: 62,
                           height: 62,
-                          decoration: const BoxDecoration(
-                            color: AppTheme.primaryBlue,
+                          decoration: BoxDecoration(
+                            color: isDark ? const Color(0xFF222222) : const Color(0xFFE1E8ED),
                             shape: BoxShape.circle,
                           ),
                           alignment: Alignment.center,
-                          child: Text(
-                            user.avatarUrl,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 28,
-                            ),
+                          child: Icon(
+                            Icons.person_rounded,
+                            size: 38,
+                            color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
                           ),
                         ),
                       ),
