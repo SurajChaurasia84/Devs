@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -126,7 +127,7 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
               onPressed: _contentController.text.trim().isEmpty ? null : () => _publishPost(appState),
               style: TextButton.styleFrom(
                 backgroundColor: _contentController.text.trim().isEmpty
-                    ? AppTheme.primaryBlue.withOpacity(0.3)
+                    ? AppTheme.primaryBlue.withValues(alpha: 0.3)
                     : AppTheme.primaryBlue,
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -148,10 +149,10 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    _buildTypeSelector('text', Icons.edit_note_rounded, 'Text'),
-                    _buildTypeSelector('code', Icons.code_rounded, 'Code Snippet'),
-                    _buildTypeSelector('project', Icons.folder_open_rounded, 'Project Showcase'),
-                    _buildTypeSelector('screenshot', Icons.screenshot_monitor_rounded, 'IDE Mockup'),
+                    _buildTypeSelector('text', LucideIcons.fileText, 'Text'),
+                    _buildTypeSelector('code', LucideIcons.code, 'Code Snippet'),
+                    _buildTypeSelector('project', LucideIcons.folder, 'Project Showcase'),
+                    _buildTypeSelector('screenshot', LucideIcons.image, 'IDE Mockup'),
                   ],
                 ),
               ),
@@ -300,9 +301,9 @@ class _CreatePostScreenState extends State<CreatePostScreen> {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    _buildMockupSelectCard('dashboard', Icons.dashboard_customize_rounded, 'Dashboard Grid'),
+                    _buildMockupSelectCard('dashboard', LucideIcons.layoutGrid, 'Dashboard Grid'),
                     const SizedBox(width: 12),
-                    _buildMockupSelectCard('editor', Icons.edit_note_rounded, 'Code Editor'),
+                    _buildMockupSelectCard('editor', LucideIcons.code, 'Code Editor'),
                   ],
                 ),
                 const SizedBox(height: 16),
