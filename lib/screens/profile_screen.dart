@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -125,7 +126,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                           alignment: Alignment.center,
                           child: Icon(
-                            Icons.person_rounded,
+                            LucideIcons.user,
                             size: 38,
                             color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
                           ),
@@ -180,9 +181,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       // Links Row
                       Row(
                         children: [
-                          _buildLinkChip(context, Icons.link_rounded, 'GitHub', user.githubUrl),
+                          _buildLinkChip(context, LucideIcons.github, 'GitHub', user.githubUrl),
                           const SizedBox(width: 8),
-                          _buildLinkChip(context, Icons.language_rounded, 'Portfolio', user.portfolioUrl),
+                          _buildLinkChip(context, LucideIcons.globe, 'Portfolio', user.portfolioUrl),
                         ],
                       ),
                       const SizedBox(height: 16),
