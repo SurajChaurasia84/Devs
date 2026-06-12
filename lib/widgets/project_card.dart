@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import 'skill_tag.dart';
@@ -61,7 +61,7 @@ class ProjectCard extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Iconsax.lock, size: 7, color: AppTheme.primaryBlue),
+                        const Icon(LucideIcons.lock, size: 7, color: AppTheme.primaryBlue),
                         const SizedBox(width: 3),
                         Text(
                           '${project.id}.devs.app/preview',
@@ -121,7 +121,7 @@ class ProjectCard extends StatelessWidget {
             right: 12,
             bottom: 8,
             child: Icon(
-              Iconsax.code,
+              LucideIcons.terminal,
               color: AppTheme.primaryBlue.withValues(alpha: 0.25),
               size: 28,
             ),
@@ -201,7 +201,7 @@ class ProjectCard extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: const Icon(Iconsax.github, size: 14),
+                        icon: const Icon(LucideIcons.github, size: 14),
                         label: const Text('GitHub', style: TextStyle(fontSize: 12)),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: textPrimary,
@@ -224,7 +224,7 @@ class ProjectCard extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: const Icon(Iconsax.export, size: 14),
+                        icon: const Icon(LucideIcons.externalLink, size: 14),
                         label: const Text('Demo', style: TextStyle(fontSize: 12)),
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.white,
