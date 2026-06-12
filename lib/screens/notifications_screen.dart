@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../data/mock_data.dart';
 import '../theme/app_theme.dart';
 import '../widgets/notification_item.dart';
@@ -18,7 +19,7 @@ class NotificationsScreen extends StatelessWidget {
         title: const Text('Activity'),
         centerTitle: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(LucideIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -32,9 +33,9 @@ class NotificationsScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.notifications_none_rounded,
+                    LucideIcons.bell,
                     size: 48,
-                    color: textSecondary.withOpacity(0.5),
+                    color: textSecondary.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: 12),
                   Text(
