@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:lucide_icons/lucide_icons.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -71,7 +72,7 @@ class HomeScreen extends StatelessWidget {
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(Icons.close_rounded),
+                              icon: const Icon(LucideIcons.x),
                               onPressed: () => Navigator.pop(context),
                               iconSize: 20,
                             )
@@ -88,9 +89,9 @@ class HomeScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
-                                      Icons.chat_bubble_outline_rounded,
+                                      LucideIcons.messageSquare,
                                       size: 36,
-                                      color: textSecondary.withOpacity(0.5),
+                                      color: textSecondary.withValues(alpha: 0.5),
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
@@ -100,7 +101,7 @@ class HomeScreen extends StatelessWidget {
                                     const SizedBox(height: 2),
                                     Text(
                                       'Be the first to share your thoughts!',
-                                      style: TextStyle(color: textSecondary.withOpacity(0.7), fontSize: 11),
+                                      style: TextStyle(color: textSecondary.withValues(alpha: 0.7), fontSize: 11),
                                     ),
                                   ],
                                 ),
@@ -186,7 +187,7 @@ class HomeScreen extends StatelessWidget {
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(
-                                  Icons.send_rounded,
+                                  LucideIcons.send,
                                   color: Colors.white,
                                   size: 16,
                                 ),
@@ -252,7 +253,7 @@ class HomeScreen extends StatelessWidget {
             builder: (context, appState, child) {
               return IconButton(
                 icon: Icon(
-                  appState.isDarkMode ? Icons.wb_sunny_outlined : Icons.mode_night_outlined,
+                  appState.isDarkMode ? LucideIcons.sun : LucideIcons.moon,
                   size: 20,
                 ),
                 onPressed: () => appState.toggleTheme(),
@@ -262,7 +263,7 @@ class HomeScreen extends StatelessWidget {
           
           // Activity bell notification page access
           IconButton(
-            icon: const Icon(Icons.notifications_outlined, size: 22),
+            icon: const Icon(LucideIcons.bell, size: 22),
             onPressed: () {
               Navigator.push(
                 context,
@@ -283,7 +284,7 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
-                    Icons.feed_outlined,
+                    LucideIcons.fileText,
                     size: 48,
                     color: textSecondary.withValues(alpha: 0.5),
                   ),
