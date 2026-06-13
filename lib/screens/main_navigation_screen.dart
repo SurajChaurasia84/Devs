@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax/iconsax.dart';
 import '../theme/app_theme.dart';
 import 'home_screen.dart';
 import 'communities_screen.dart';
@@ -88,8 +89,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 // 5. Profile
                 _buildNavItem(
                   index: 4,
-                  activeIcon: LucideIcons.user,
-                  inactiveIcon: LucideIcons.user,
+                  activeIcon: Iconsax.profile_circle,
+                  inactiveIcon: Iconsax.profile_circle,
                   label: 'Profile',
                 ),
               ],
@@ -111,42 +112,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     final activeColor = AppTheme.primaryBlue;
     final inactiveColor = isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary;
 
-    Widget childWidget;
-    
-    if (index == 4) {
-      // Profile Tab: Instagram-style circular avatar
-      final borderCol = isSelected ? activeColor : (isDark ? AppTheme.darkBorder : AppTheme.lightBorder);
-      childWidget = Container(
-        width: 34,
-        height: 34,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: borderCol,
-            width: isSelected ? 2 : 1.5,
-          ),
-        ),
-        padding: const EdgeInsets.all(1.5),
-        child: Container(
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF222222) : const Color(0xFFE1E8ED),
-            shape: BoxShape.circle,
-          ),
-          alignment: Alignment.center,
-          child: Icon(
-            LucideIcons.user,
-            size: 16,
-            color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
-          ),
-        ),
-      );    } else {
-      // Standard Tab: Icon
-      childWidget = Icon(
-        isSelected ? activeIcon : inactiveIcon,
-        color: isSelected ? activeColor : inactiveColor,
-        size: 26,
-      );
-    }
+    // Standard Tab: Icon
+    Widget childWidget = Icon(
+      isSelected ? activeIcon : inactiveIcon,
+      color: isSelected ? activeColor : inactiveColor,
+      size: 26,
+    );
 
     return GestureDetector(
       onTap: () => _onItemTapped(index),
