@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax/iconsax.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import 'code_highlighter.dart';
@@ -242,14 +243,12 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
     final textPrimary = isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary;
     final textSecondary = isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary;
     final borderCol = isDark ? AppTheme.darkBorder : AppTheme.lightBorder;
-    final theme = Theme.of(context);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: borderCol, width: 1),
+        border: Border(bottom: BorderSide(color: borderCol, width: 0.8)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -434,9 +433,6 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
               child: _buildScreenshotMockup(context, isDark),
             ),
           
-          // Footer Actions Divider
-          Divider(color: borderCol, height: 1, thickness: 1),
-          
           // Footer Interaction Row
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -451,16 +447,16 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                       ScaleTransition(
                         scale: _likeScale,
                         child: Icon(
-                          LucideIcons.heart,
+                          widget.post.isLiked ? Iconsax.heart5 : Iconsax.heart,
                           size: 18,
-                          color: widget.post.isLiked ? AppTheme.primaryBlue : textSecondary,
+                          color: widget.post.isLiked ? const Color(0xFFF91880) : textSecondary,
                         ),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         '${widget.post.likesCount}',
                         style: TextStyle(
-                          color: widget.post.isLiked ? AppTheme.primaryBlue : textSecondary,
+                          color: widget.post.isLiked ? const Color(0xFFF91880) : textSecondary,
                           fontSize: 12,
                           fontWeight: widget.post.isLiked ? FontWeight.bold : FontWeight.normal,
                         ),
@@ -497,7 +493,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                   child: Row(
                     children: [
                       Icon(
-                        LucideIcons.bookmark,
+                        widget.post.isSaved ? Icons.bookmark : Icons.bookmark_border,
                         size: 18,
                         color: widget.post.isSaved ? AppTheme.primaryBlue : textSecondary,
                       ),
