@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:iconsax/iconsax.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -17,6 +18,38 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String _selectedTab = 'posts'; // 'posts', 'projects', 'about'
+  late ScrollController _scrollController;
+  bool _showCollapsedTitle = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.hasClients && _scrollController.offset > 80) {
+      if (!_showCollapsedTitle) {
+        setState(() {
+          _showCollapsedTitle = true;
+        });
+      }
+    } else {
+      if (_showCollapsedTitle) {
+        setState(() {
+          _showCollapsedTitle = false;
+        });
+      }
+    }
+  }
 
   // Build the custom grid/blueprint background banner for developer profile
   Widget _buildBanner(BuildContext context, bool isDark) {
@@ -85,196 +118,238 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Profile'),
-        centerTitle: false,
-      ),
-      body: Consumer<AppState>(
-        builder: (context, appState, child) {
-          final user = appState.currentUser;
-          
-          // Filter feed posts to get only user's posts
-          final userPosts = appState.posts.where((post) => post.authorUsername == user.username).toList();
-          final userProjects = appState.projects;
-
-          return CustomScrollView(
-            slivers: [
-              // Banner & Overlapping Avatar header layout
-              SliverToBoxAdapter(
-                child: Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    _buildBanner(context, isDark),
-                    Positioned(
-                      left: 16,
-                      bottom: -36,
-                      child: Container(
-                        width: 72,
-                        height: 72,
-                        decoration: BoxDecoration(
-                          color: theme.scaffoldBackgroundColor,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
-                        ),
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: 62,
-                          height: 62,
+      body: SafeArea(
+        child: Consumer<AppState>(
+          builder: (context, appState, child) {
+            final user = appState.currentUser;
+            
+            // Filter feed posts to get only user's posts
+            final userPosts = appState.posts.where((post) => post.authorUsername == user.username).toList();
+            final userProjects = appState.projects;
+  
+            return CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                SliverAppBar(
+                  pinned: true,
+                  expandedHeight: 144,
+                  backgroundColor: theme.scaffoldBackgroundColor,
+                  elevation: 0.5,
+                  automaticallyImplyLeading: false,
+                  titleSpacing: 16,
+                  title: AnimatedOpacity(
+                    opacity: _showCollapsedTitle ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 150),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
                           decoration: BoxDecoration(
-                            color: isDark ? const Color(0xFF222222) : const Color(0xFFE1E8ED),
+                            color: isDark ? const Color(0xFF202020) : const Color(0xFFF0F0F0),
                             shape: BoxShape.circle,
                           ),
                           alignment: Alignment.center,
                           child: Icon(
-                            LucideIcons.user,
-                            size: 38,
+                            Iconsax.profile_circle5,
+                            size: 28,
                             color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
                           ),
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              
-              // Top padding to account for the overlapping avatar
-              const SliverToBoxAdapter(
-                child: SizedBox(height: 44),
-              ),
-              
-              // Profile details & stats block
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Name & Username
-                      Text(
-                        user.name,
-                        style: TextStyle(
-                          color: textPrimary,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w900,
-                        ),
-                      ),
-                      Text(
-                        '@${user.username}',
-                        style: TextStyle(
-                          color: textSecondary,
-                          fontSize: 13,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      
-                      // Bio
-                      Text(
-                        user.bio,
-                        style: TextStyle(
-                          color: textPrimary,
-                          fontSize: 13,
-                          height: 1.4,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      
-                      // Links Row
-                      Row(
-                        children: [
-                          _buildLinkChip(context, LucideIcons.github, 'GitHub', user.githubUrl),
-                          const SizedBox(width: 8),
-                          _buildLinkChip(context, LucideIcons.globe, 'Portfolio', user.portfolioUrl),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      
-                      // Stats metrics row
-                      Row(
-                        children: [
-                          _buildStatItem(user.followersCount.toString(), 'Followers'),
-                          _buildStatDivider(borderCol),
-                          _buildStatItem(user.followingCount.toString(), 'Following'),
-                          _buildStatDivider(borderCol),
-                          _buildStatItem(userPosts.length.toString(), 'Posts'),
-                          _buildStatDivider(borderCol),
-                          _buildStatItem(userProjects.length.toString(), 'Projects'),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                  ),
-                ),
-              ),
-              
-              // Tab Selector Row
-              SliverToBoxAdapter(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: borderCol, width: 1),
-                      bottom: BorderSide(color: borderCol, width: 1),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      _buildTabItem('posts', 'Posts (${userPosts.length})'),
-                      _buildTabItem('projects', 'Projects (${userProjects.length})'),
-                      _buildTabItem('about', 'About'),
-                    ],
-                  ),
-                ),
-              ),
-              
-              // Dynamic Tab contents
-              SliverPadding(
-                padding: const EdgeInsets.all(12),
-                sliver: _selectedTab == 'posts'
-                    ? (userPosts.isEmpty
-                        ? SliverFillRemaining(
-                            hasScrollBody: false,
-                            child: _buildEmptyTabState('No updates posted yet.'),
-                          )
-                        : SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                final post = userPosts[index];
-                                return PostCard(
-                                  post: post,
-                                  onLikeTap: () => appState.toggleLike(post.id),
-                                  onSaveTap: () => appState.toggleSave(post.id),
-                                );
-                              },
-                              childCount: userPosts.length,
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              user.name,
+                              style: TextStyle(
+                                color: textPrimary,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ))
-                    : _selectedTab == 'projects'
-                        ? (userProjects.isEmpty
-                            ? SliverFillRemaining(
-                                hasScrollBody: false,
-                                child: _buildEmptyTabState('No projects published yet.'),
-                              )
-                            : SliverList(
-                                delegate: SliverChildBuilderDelegate(
-                                  (context, index) {
-                                    final proj = userProjects[index];
-                                    return Padding(
-                                      padding: const EdgeInsets.only(bottom: 12),
-                                      child: ProjectCard(
-                                        project: proj,
-                                      ),
-                                    );
-                                  },
-                                  childCount: userProjects.length,
-                                ),
-                              ))
-                        : SliverFillRemaining(
-                            hasScrollBody: false,
-                            child: _buildAboutTab(context, user, textPrimary, textSecondary, borderCol),
+                            const SizedBox(height: 1),
+                            Text(
+                              '@${user.username}',
+                              style: TextStyle(
+                                color: textSecondary,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Stack(
+                      clipBehavior: Clip.none,
+                      children: [
+                        _buildBanner(context, isDark),
+                        Positioned(
+                          left: 16,
+                          bottom: -36,
+                          child: Container(
+                            width: 72,
+                            height: 72,
+                            decoration: BoxDecoration(
+                              color: theme.scaffoldBackgroundColor,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: theme.scaffoldBackgroundColor, width: 3),
+                            ),
+                            alignment: Alignment.center,
+                            child: Icon(
+                              Iconsax.profile_circle5,
+                              size: 66,
+                              color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
+                            ),
                           ),
-              ),
-            ],
-          );
-        },
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                
+                // Top padding to account for the overlapping avatar
+                const SliverToBoxAdapter(
+                  child: SizedBox(height: 44),
+                ),
+                
+                // Profile details & stats block
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Name & Username
+                        Text(
+                          user.name,
+                          style: TextStyle(
+                            color: textPrimary,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
+                        Text(
+                          '@${user.username}',
+                          style: TextStyle(
+                            color: textSecondary,
+                            fontSize: 13,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        
+                        // Bio
+                        Text(
+                          user.bio,
+                          style: TextStyle(
+                            color: textPrimary,
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        
+                        // Links Row
+                        Row(
+                          children: [
+                            _buildLinkChip(context, LucideIcons.github, 'GitHub', user.githubUrl),
+                            const SizedBox(width: 8),
+                            _buildLinkChip(context, LucideIcons.globe, 'Portfolio', user.portfolioUrl),
+                          ],
+                        ),
+                        const SizedBox(height: 16),
+                        
+                        // Stats metrics row
+                        Row(
+                          children: [
+                            _buildStatItem(user.followersCount.toString(), 'Followers'),
+                            _buildStatDivider(borderCol),
+                            _buildStatItem(user.followingCount.toString(), 'Following'),
+                            _buildStatDivider(borderCol),
+                            _buildStatItem(userPosts.length.toString(), 'Posts'),
+                            _buildStatDivider(borderCol),
+                            _buildStatItem(userProjects.length.toString(), 'Projects'),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                    ),
+                  ),
+                ),
+                
+                // Tab Selector Row
+                SliverToBoxAdapter(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        top: BorderSide(color: borderCol, width: 1),
+                        bottom: BorderSide(color: borderCol, width: 1),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        _buildTabItem('posts', 'Posts (${userPosts.length})'),
+                        _buildTabItem('projects', 'Projects (${userProjects.length})'),
+                        _buildTabItem('about', 'About'),
+                      ],
+                    ),
+                  ),
+                ),
+                
+                // Dynamic Tab contents
+                SliverPadding(
+                  padding: const EdgeInsets.all(12),
+                  sliver: _selectedTab == 'posts'
+                      ? (userPosts.isEmpty
+                          ? SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: _buildEmptyTabState('No updates posted yet.'),
+                            )
+                          : SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
+                                  final post = userPosts[index];
+                                  return PostCard(
+                                    post: post,
+                                    onLikeTap: () => appState.toggleLike(post.id),
+                                    onSaveTap: () => appState.toggleSave(post.id),
+                                  );
+                                },
+                                childCount: userPosts.length,
+                              ),
+                            ))
+                      : _selectedTab == 'projects'
+                          ? (userProjects.isEmpty
+                              ? SliverFillRemaining(
+                                  hasScrollBody: false,
+                                  child: _buildEmptyTabState('No projects published yet.'),
+                                )
+                              : SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    (context, index) {
+                                      final proj = userProjects[index];
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 12),
+                                        child: ProjectCard(
+                                          project: proj,
+                                        ),
+                                      );
+                                    },
+                                    childCount: userProjects.length,
+                                  ),
+                                ))
+                          : SliverFillRemaining(
+                              hasScrollBody: false,
+                              child: _buildAboutTab(context, user, textPrimary, textSecondary, borderCol),
+                            ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
