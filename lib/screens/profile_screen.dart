@@ -132,7 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               slivers: [
                 SliverAppBar(
                   pinned: true,
-                  expandedHeight: 144,
+                  expandedHeight: 140,
                   backgroundColor: theme.scaffoldBackgroundColor,
                   elevation: 0.5,
                   automaticallyImplyLeading: false,
@@ -184,12 +184,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(
-                      clipBehavior: Clip.none,
                       children: [
-                        _buildBanner(context, isDark),
+                        Positioned(
+                          top: 0,
+                          left: 0,
+                          right: 0,
+                          height: 100,
+                          child: _buildBanner(context, isDark),
+                        ),
                         Positioned(
                           left: 16,
-                          bottom: -36,
+                          top: 64,
                           child: Container(
                             width: 72,
                             height: 72,
@@ -209,11 +214,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                   ),
-                ),
-                
-                // Top padding to account for the overlapping avatar
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: 44),
                 ),
                 
                 // Profile details & stats block
