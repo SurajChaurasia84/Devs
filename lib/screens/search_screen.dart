@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -81,81 +80,76 @@ class _SearchScreenState extends State<SearchScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Discover',
-          style: GoogleFonts.outfit(color: textPrimary, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: false,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Sleek Search input bar
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Container(
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: borderCol, width: 1),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  Icon(LucideIcons.search, color: textSecondary, size: 20),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: TextField(
-                      controller: _searchController,
-                      style: TextStyle(color: textPrimary, fontSize: 14),
-                      decoration: InputDecoration(
-                        hintText: 'Search devs, communities, or projects...',
-                        hintStyle: TextStyle(color: textSecondary, fontSize: 14),
-                        border: InputBorder.none,
-                        isDense: true,
-                        contentPadding: const EdgeInsets.symmetric(vertical: 12),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Sleek Search input bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: borderCol, width: 1),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  children: [
+                    Icon(LucideIcons.search, color: textSecondary, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: TextField(
+                        controller: _searchController,
+                        style: TextStyle(color: textPrimary, fontSize: 14),
+                        decoration: InputDecoration(
+                          hintText: 'Search devs, communities, or projects...',
+                          hintStyle: TextStyle(color: textSecondary, fontSize: 14),
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                        ),
                       ),
                     ),
-                  ),
-                  if (_searchQuery.isNotEmpty)
-                    GestureDetector(
-                      onTap: () => _searchController.clear(),
-                      child: Icon(LucideIcons.xCircle, color: textSecondary, size: 18),
-                    ),
+                    if (_searchQuery.isNotEmpty)
+                      GestureDetector(
+                        onTap: () => _searchController.clear(),
+                        child: Icon(LucideIcons.xCircle, color: textSecondary, size: 18),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            
+            // Tabs Category header selector
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+              child: Row(
+                children: [
+                  _buildCategoryTab('devs', 'Developers'),
+                  _buildCategoryTab('groups', 'Communities'),
+                  _buildCategoryTab('projects', 'Projects'),
                 ],
               ),
             ),
-          ),
-          
-          // Tabs Category header selector
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Row(
-              children: [
-                _buildCategoryTab('devs', 'Developers'),
-                _buildCategoryTab('groups', 'Communities'),
-                _buildCategoryTab('projects', 'Projects'),
-              ],
+            const SizedBox(height: 10),
+            
+            // Search results
+            Expanded(
+              child: Consumer<AppState>(
+                builder: (context, appState, child) {
+                  if (_activeTab == 'devs') {
+                    return _buildDevsResults(textPrimary, textSecondary, borderCol);
+                  } else if (_activeTab == 'groups') {
+                    return _buildGroupsResults(appState, textSecondary);
+                  } else {
+                    return _buildProjectsResults(appState, textSecondary);
+                  }
+                },
+              ),
             ),
-          ),
-          const SizedBox(height: 10),
-          
-          // Search results
-          Expanded(
-            child: Consumer<AppState>(
-              builder: (context, appState, child) {
-                if (_activeTab == 'devs') {
-                  return _buildDevsResults(textPrimary, textSecondary, borderCol);
-                } else if (_activeTab == 'groups') {
-                  return _buildGroupsResults(appState, textSecondary);
-                } else {
-                  return _buildProjectsResults(appState, textSecondary);
-                }
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
