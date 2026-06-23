@@ -911,13 +911,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                 const SizedBox(height: 12),
-                                OutlinedButton.icon(
+                                TextButton.icon(
                                   onPressed: () => _navigateToProjectForm(),
-                                  icon: const Icon(LucideIcons.plus, size: 14),
-                                  label: const Text('Add Project', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: textPrimary,
-                                    side: BorderSide(color: borderCol),
+                                  icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
+                                  label: const Text('Add Project', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppTheme.primaryBlue,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
                                   ),
@@ -987,13 +986,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                   ),
                                 const SizedBox(height: 12),
-                                OutlinedButton.icon(
+                                TextButton.icon(
                                   onPressed: () => _navigateToLinkForm(),
-                                  icon: const Icon(LucideIcons.plus, size: 14),
-                                  label: const Text('Add Link', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                                  style: OutlinedButton.styleFrom(
-                                    foregroundColor: textPrimary,
-                                    side: BorderSide(color: borderCol),
+                                  icon: const Icon(Icons.add_circle_outline_rounded, size: 18),
+                                  label: const Text('Add Link', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: AppTheme.primaryBlue,
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                                     padding: const EdgeInsets.symmetric(vertical: 10),
                                   ),
