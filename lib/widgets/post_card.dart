@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+﻿import 'package:flutter/material.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:iconsax/iconsax.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -319,7 +319,7 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
                       ),
                       const SizedBox(height: 1),
                       Text(
-                        '@${widget.post.authorUsername} • ${widget.post.timeAgo}',
+                        '@${widget.post.authorUsername} â€¢ ${widget.post.timeAgo}',
                         style: TextStyle(
                           color: textSecondary,
                           fontSize: 12,
