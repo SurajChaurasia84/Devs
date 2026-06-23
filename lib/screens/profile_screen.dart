@@ -9,6 +9,7 @@ import '../widgets/post_card.dart';
 import '../widgets/project_card.dart';
 import '../widgets/skill_tag.dart';
 import 'edit_profile_screen.dart';
+import '../utils/link_utils.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -202,24 +203,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  IconData _getLinkIcon(String platform, String url) {
-    final cleanPlatform = platform.toLowerCase().trim();
-    final cleanUrl = url.toLowerCase().trim();
-
-    if (cleanPlatform.contains('github') || cleanUrl.contains('github.com')) {
-      return LucideIcons.code;
-    } else if (cleanPlatform.contains('linkedin') || cleanUrl.contains('linkedin.com')) {
-      return LucideIcons.briefcase;
-    } else if (cleanPlatform.contains('youtube') || cleanUrl.contains('youtube.com') || cleanUrl.contains('youtu.be')) {
-      return LucideIcons.play;
-    } else if (cleanPlatform.contains('instagram') || cleanUrl.contains('instagram.com')) {
-      return Iconsax.instagram;
-    } else if (cleanPlatform.contains('twitter') || cleanPlatform.contains(' x ') || cleanPlatform == 'x' || cleanUrl.contains('twitter.com') || cleanUrl.contains('x.com')) {
-      return LucideIcons.send;
-    } else if (cleanPlatform.contains('portfolio') || cleanPlatform.contains('website') || cleanPlatform.contains('web')) {
-      return LucideIcons.globe;
-    }
-    return LucideIcons.link;
+  void _launchURL(BuildContext context, String url) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Opening link: $url...', style: const TextStyle(color: Colors.white)),
+        backgroundColor: AppTheme.primaryBlue,
+        duration: const Duration(seconds: 1),
+      ),
+    );
   }
 
   @override
@@ -404,16 +395,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Row(
                                 children: user.links.isEmpty
                                     ? [
-                                        _buildLinkChip(context, _getLinkIcon('GitHub', user.githubUrl), 'GitHub', user.githubUrl),
+                                        _buildLinkChip(context, 'GitHub', user.githubUrl),
                                         const SizedBox(width: 8),
-                                        _buildLinkChip(context, _getLinkIcon('Portfolio', user.portfolioUrl), 'Portfolio', user.portfolioUrl),
+                                        _buildLinkChip(context, 'Portfolio', user.portfolioUrl),
                                       ]
                                     : user.links.map((link) {
                                         return Padding(
                                           padding: const EdgeInsets.only(right: 8),
                                           child: _buildLinkChip(
                                             context,
-                                            _getLinkIcon(link.platform, link.url),
                                             link.platform,
                                             link.url,
                                           ),
@@ -527,21 +517,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildLinkChip(BuildContext context, IconData icon, String label, String url) {
+  Widget _buildLinkChip(BuildContext context, String label, String url) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final textPrimary = isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary;
     final borderCol = isDark ? AppTheme.darkBorder : AppTheme.lightBorder;
+    final faviconUrl = getFaviconUrl(url);
 
     return GestureDetector(
-      onTap: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Opening link: $url...', style: const TextStyle(color: Colors.white)),
-            backgroundColor: AppTheme.primaryBlue,
-            duration: const Duration(seconds: 1),
-          ),
-        );
-      },
+      onTap: () => _launchURL(context, url),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
@@ -549,9 +532,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 12, color: AppTheme.primaryBlue),
-            const SizedBox(width: 4),
+            ClipOval(
+              child: Image.network(
+                faviconUrl,
+                width: 14,
+                height: 14,
+                fit: BoxFit.contain,
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return const SizedBox(
+                    width: 14,
+                    height: 14,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 1.0,
+                      valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return Icon(
+                    Icons.language,
+                    size: 12,
+                    color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
