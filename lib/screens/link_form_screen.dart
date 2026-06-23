@@ -22,10 +22,16 @@ class _LinkFormScreenState extends State<LinkFormScreen> {
     super.initState();
     _nameController = TextEditingController(text: widget.link?.platform ?? "");
     _urlController = TextEditingController(text: widget.link?.url ?? "");
+    _nameController.addListener(_onNameChanged);
+  }
+
+  void _onNameChanged() {
+    setState(() {});
   }
 
   @override
   void dispose() {
+    _nameController.removeListener(_onNameChanged);
     _nameController.dispose();
     _urlController.dispose();
     super.dispose();
@@ -152,14 +158,28 @@ class _LinkFormScreenState extends State<LinkFormScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _buildInputLabel('Link Name *'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    _buildInputLabel('Link Name *'),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(
+                        '${_nameController.text.length}/20',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.grey),
+                      ),
+                    ),
+                  ],
+                ),
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
+                  maxLength: 20,
                   style: const TextStyle(fontSize: 13),
                   decoration: const InputDecoration(
                     hintText: 'e.g. GitHub, LinkedIn, Portfolio',
                     border: InputBorder.none,
+                    counterText: "",
                   ),
                   validator: (val) => val == null || val.trim().isEmpty ? 'Link name is required' : null,
                 ),
