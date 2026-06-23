@@ -17,7 +17,15 @@ class AppState extends ChangeNotifier {
     followersCount: 1240,
     followingCount: 382,
     postsCount: 3,
-    projectsCount: 2,
+    projectsCount: 3,
+    about: "Hey, I'm Suraj Chaurasia! I love writing clean Flutter layouts, learning Kotlin compilers, and building developer tools in public. Mostly focusing on crafting dark modes and highly responsive micro-animations.",
+    interests: ["Open Source", "Mobile Development", "System Design", "UI/UX Design", "Kotlin Compilers"],
+    links: [
+      ProfileLink(platform: "GitHub", url: "https://github.com/SurajChaurasia84"),
+      ProfileLink(platform: "Portfolio", url: "https://suraj.dev"),
+      ProfileLink(platform: "Twitter/X", url: "https://twitter.com/suraj_dev"),
+      ProfileLink(platform: "LinkedIn", url: "https://linkedin.com/in/surajchaurasia"),
+    ],
   );
   UserProfile get currentUser => _currentUser;
 
@@ -109,6 +117,15 @@ class AppState extends ChangeNotifier {
         techStack: ["Dart", "Regular Expressions", "TextSpan"],
         githubUrl: "https://github.com/SurajChaurasia84/FastRegex",
         demoUrl: "https://pub.dev/packages/fast_regex",
+      ),
+      Project(
+        id: "p3",
+        title: "GitStream Workflows",
+        description: "An automated pipeline runner that compiles, tests, and deploys multi-platform Flutter apps directly to stores using Docker containers.",
+        imagePlaceholder: "pipeline_runs",
+        techStack: ["Kotlin", "Docker", "GitHub Actions", "Shell"],
+        githubUrl: "https://github.com/SurajChaurasia84/GitStream",
+        demoUrl: "https://github.com/SurajChaurasia84/GitStream/actions",
       ),
     ];
 
@@ -408,6 +425,35 @@ class MyApp extends StatelessWidget {
     // To see feedback, we can toggle follows state
     _currentUser = _currentUser.copyWith(
       followingCount: _currentUser.followingCount + 1, // simplified toggle
+    );
+    notifyListeners();
+  }
+
+  void updateProfile(UserProfile profile) {
+    _currentUser = profile;
+    notifyListeners();
+  }
+
+  void addProject(Project project) {
+    _projects.insert(0, project);
+    _currentUser = _currentUser.copyWith(
+      projectsCount: _currentUser.projectsCount + 1,
+    );
+    notifyListeners();
+  }
+
+  void editProject(Project updatedProject) {
+    final index = _projects.indexWhere((p) => p.id == updatedProject.id);
+    if (index != -1) {
+      _projects[index] = updatedProject;
+      notifyListeners();
+    }
+  }
+
+  void deleteProject(String projectId) {
+    _projects.removeWhere((p) => p.id == projectId);
+    _currentUser = _currentUser.copyWith(
+      projectsCount: _currentUser.projectsCount - 1,
     );
     notifyListeners();
   }
