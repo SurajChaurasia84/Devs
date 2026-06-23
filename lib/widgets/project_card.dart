@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import 'skill_tag.dart';
@@ -201,7 +201,7 @@ class ProjectCard extends StatelessWidget {
                             ),
                           );
                         },
-                        icon: const Icon(LucideIcons.github, size: 14),
+                        icon: const Icon(LucideIcons.code, size: 14),
                         label: const Text('GitHub', style: TextStyle(fontSize: 12)),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: textPrimary,
