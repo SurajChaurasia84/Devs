@@ -1,3 +1,10 @@
+class ProfileLink {
+  final String platform;
+  final String url;
+
+  ProfileLink({required this.platform, required this.url});
+}
+
 class UserProfile {
   final String name;
   final String username;
@@ -11,6 +18,10 @@ class UserProfile {
   int followingCount;
   int postsCount;
   int projectsCount;
+  final String? bannerImage;
+  final String? about;
+  final List<String> interests;
+  final List<ProfileLink> links;
 
   UserProfile({
     required this.name,
@@ -25,6 +36,10 @@ class UserProfile {
     required this.followingCount,
     required this.postsCount,
     required this.projectsCount,
+    this.bannerImage,
+    this.about = "",
+    this.interests = const [],
+    this.links = const [],
   });
 
   UserProfile copyWith({
@@ -40,6 +55,10 @@ class UserProfile {
     int? followingCount,
     int? postsCount,
     int? projectsCount,
+    String? bannerImage,
+    String? about,
+    List<String>? interests,
+    List<ProfileLink>? links,
   }) {
     return UserProfile(
       name: name ?? this.name,
@@ -54,6 +73,10 @@ class UserProfile {
       followingCount: followingCount ?? this.followingCount,
       postsCount: postsCount ?? this.postsCount,
       projectsCount: projectsCount ?? this.projectsCount,
+      bannerImage: bannerImage ?? this.bannerImage,
+      about: about ?? this.about,
+      interests: interests ?? this.interests,
+      links: links ?? this.links,
     );
   }
 }
