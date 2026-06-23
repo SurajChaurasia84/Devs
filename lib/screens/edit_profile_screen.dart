@@ -7,6 +7,7 @@ import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import 'project_form_screen.dart';
 import 'link_form_screen.dart';
+import '../widgets/profile_link_tile.dart';
 
 
 class EditProfileScreen extends StatefulWidget {
@@ -345,25 +346,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
   }
 
-  IconData _getLinkIcon(String platform, String url) {
-    final cleanPlatform = platform.toLowerCase().trim();
-    final cleanUrl = url.toLowerCase().trim();
 
-    if (cleanPlatform.contains('github') || cleanUrl.contains('github.com')) {
-      return LucideIcons.code;
-    } else if (cleanPlatform.contains('linkedin') || cleanUrl.contains('linkedin.com')) {
-      return LucideIcons.briefcase;
-    } else if (cleanPlatform.contains('youtube') || cleanUrl.contains('youtube.com') || cleanUrl.contains('youtu.be')) {
-      return LucideIcons.play;
-    } else if (cleanPlatform.contains('instagram') || cleanUrl.contains('instagram.com')) {
-      return Iconsax.instagram;
-    } else if (cleanPlatform.contains('twitter') || cleanPlatform.contains(' x ') || cleanPlatform == 'x' || cleanUrl.contains('twitter.com') || cleanUrl.contains('x.com')) {
-      return LucideIcons.send;
-    } else if (cleanPlatform.contains('portfolio') || cleanPlatform.contains('website') || cleanPlatform.contains('web')) {
-      return LucideIcons.globe;
-    }
-    return LucideIcons.link;
-  }
 
   Future<bool> _showDeleteConfirmationDialog({required String title, required String itemType}) async {
     return await showDialog<bool>(
@@ -933,48 +916,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 ..._links.map((link) {
-                                  return GestureDetector(
+                                  return ProfileLinkTile(
+                                    link: link,
                                     onTap: () => _navigateToLinkForm(link: link),
-                                    behavior: HitTestBehavior.opaque,
-                                    child: Container(
-                                      margin: const EdgeInsets.only(bottom: 8),
-                                      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                                      child: Row(
-                                        children: [
-                                          Icon(_getLinkIcon(link.platform, link.url), color: AppTheme.primaryBlue, size: 18),
-                                          const SizedBox(width: 10),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(link.platform, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                                                const SizedBox(height: 2),
-                                                Text(
-                                                  link.url,
-                                                  style: const TextStyle(color: Colors.grey, fontSize: 11),
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: Icon(LucideIcons.trash2, size: 14, color: Colors.red.shade200),
-                                            onPressed: () async {
-                                              final confirm = await _showDeleteConfirmationDialog(
-                                                title: 'Delete Link',
-                                                itemType: 'link',
-                                              );
-                                              if (confirm) {
-                                                setState(() {
-                                                  _links.remove(link);
-                                                });
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    onDelete: () async {
+                                      final confirm = await _showDeleteConfirmationDialog(
+                                        title: 'Delete Link',
+                                        itemType: 'link',
+                                      );
+                                      if (confirm) {
+                                        setState(() {
+                                          _links.remove(link);
+                                        });
+                                      }
+                                    },
                                   );
                                 }),
                                 if (_links.isEmpty)
