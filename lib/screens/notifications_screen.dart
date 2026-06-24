@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../data/mock_data.dart';
@@ -29,32 +29,49 @@ class NotificationsScreen extends StatelessWidget {
 
           if (notifications.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    LucideIcons.bell,
-                    size: 48,
-                    color: textSecondary.withValues(alpha: 0.5),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    'No notifications yet',
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF5F5F7),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
+                          width: 1,
+                        ),
+                      ),
+                      child: const Icon(
+                        LucideIcons.bell,
+                        size: 28,
+                        color: AppTheme.primaryBlue,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    'When people interact with you, it will appear here.',
-                    style: TextStyle(
-                      color: textSecondary,
-                      fontSize: 13,
+                    const SizedBox(height: 20),
+                    Text(
+                      'No Notifications Yet',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: textPrimary,
+                        letterSpacing: -0.5,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      'When developers like your posts, comment on your projects, or follow you, we will show them here.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: textSecondary.withValues(alpha: 0.7),
+                        fontSize: 13,
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }
