@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -30,6 +30,58 @@ class CommunitiesScreen extends StatelessWidget {
       body: Consumer<AppState>(
         builder: (context, appState, child) {
           final communities = appState.communities;
+
+          if (communities.isEmpty) {
+            final isDark = Theme.of(context).brightness == Brightness.dark;
+            final textPrimary = isDark ? AppTheme.darkTextPrimary : AppTheme.lightTextPrimary;
+            final textSecondary = isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary;
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF5F5F7),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
+                          width: 1,
+                        ),
+                      ),
+                      child: const Icon(
+                        LucideIcons.users,
+                        size: 28,
+                        color: AppTheme.primaryBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'No Communities Yet',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: textPrimary,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Join or explore technical circles. You will find them here once they are added by developers.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: textSecondary.withValues(alpha: 0.7),
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
 
           return GridView.builder(
             padding: const EdgeInsets.all(12),
