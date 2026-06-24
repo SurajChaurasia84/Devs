@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,27 +18,41 @@ void main() async {
   );
 
   final prefs = await SharedPreferences.getInstance();
-  final isDarkMode = prefs.getBool('is_dark_mode') ?? true;
+  final themeModeString = prefs.getString('theme_mode');
+  ThemeMode initialThemeMode = ThemeMode.system;
+  if (themeModeString == 'dark') {
+    initialThemeMode = ThemeMode.dark;
+  } else if (themeModeString == 'light') {
+    initialThemeMode = ThemeMode.light;
+  }
 
-  runApp(MyApp(isDarkMode: isDarkMode));
+  runApp(MyApp(initialThemeMode: initialThemeMode));
 }
 
 class MyApp extends StatelessWidget {
-  final bool isDarkMode;
-  const MyApp({super.key, required this.isDarkMode});
+  final ThemeMode initialThemeMode;
+  const MyApp({super.key, required this.initialThemeMode});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => AppState(initialDarkMode: isDarkMode),
+      create: (_) => AppState(initialThemeMode: initialThemeMode),
       child: Consumer<AppState>(
         builder: (context, appState, child) {
+          final isDark = appState.isDarkMode;
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+            statusBarBrightness: isDark ? Brightness.dark : Brightness.light,
+            systemNavigationBarColor: isDark ? const Color(0xFF000000) : const Color(0xFFFFFFFF),
+            systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+          ));
           return MaterialApp(
             title: 'Devs',
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: appState.themeMode,
             home: StreamBuilder<AuthState>(
               stream: Supabase.instance.client.auth.onAuthStateChange,
               builder: (context, snapshot) {
