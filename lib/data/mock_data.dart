@@ -1,11 +1,19 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/data_models.dart';
 
 class AppState extends ChangeNotifier {
-  bool _isDarkMode;
-  bool get isDarkMode => _isDarkMode;
+  ThemeMode _themeMode = ThemeMode.system;
+  ThemeMode get themeMode => _themeMode;
+
+  bool get isDarkMode {
+    if (_themeMode == ThemeMode.system) {
+      return PlatformDispatcher.instance.platformBrightness == Brightness.dark;
+    }
+    return _themeMode == ThemeMode.dark;
+  }
 
   UserProfile _currentUser = UserProfile(
     name: "",
@@ -38,16 +46,21 @@ class AppState extends ChangeNotifier {
   final List<DevsNotification> _notifications = [];
   List<DevsNotification> get notifications => _notifications;
 
-  AppState({bool initialDarkMode = true}) : _isDarkMode = initialDarkMode;
+  AppState({ThemeMode initialThemeMode = ThemeMode.system}) : _themeMode = initialThemeMode;
 
   // --- ACTIONS ---
 
   Future<void> toggleTheme() async {
-    _isDarkMode = !_isDarkMode;
+    if (_themeMode == ThemeMode.system) {
+      final platformBrightness = PlatformDispatcher.instance.platformBrightness;
+      _themeMode = platformBrightness == Brightness.dark ? ThemeMode.light : ThemeMode.dark;
+    } else {
+      _themeMode = _themeMode == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    }
     notifyListeners();
     try {
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('is_dark_mode', _isDarkMode);
+      await prefs.setString('theme_mode', _themeMode.name);
     } catch (e) {
       debugPrint('Error saving theme preference: $e');
     }
