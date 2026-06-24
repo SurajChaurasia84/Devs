@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:iconsax/iconsax.dart';
@@ -299,20 +299,49 @@ class HomeScreen extends StatelessWidget {
 
           if (postsList.isEmpty) {
             return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    LucideIcons.fileText,
-                    size: 48,
-                    color: textSecondary.withValues(alpha: 0.5),
-                  ),
-                  const SizedBox(height: 12),
-                  const Text(
-                    'No posts in feed',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ],
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF5F5F7),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
+                          width: 1,
+                        ),
+                      ),
+                      child: const Icon(
+                        LucideIcons.penTool,
+                        size: 28,
+                        color: AppTheme.primaryBlue,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'Your Feed is Empty',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: textPrimary,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Be the first to share a code snippet, design screenshot, or project update with the community.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: textSecondary.withValues(alpha: 0.7),
+                        height: 1.4,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           }
