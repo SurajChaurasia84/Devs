@@ -1,303 +1,56 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/data_models.dart';
 
 class AppState extends ChangeNotifier {
-  bool _isDarkMode = true;
+  bool _isDarkMode;
   bool get isDarkMode => _isDarkMode;
 
   UserProfile _currentUser = UserProfile(
-    name: "Suraj Chaurasia",
-    username: "suraj_dev",
-    avatarUrl: "S",
-    bio: "Building Devs app in public. Flutter dev | UI/UX Designer | Open Source Enthusiast 🚀",
-    skills: ["Dart", "Flutter", "Kotlin", "Java", "Python", "Swift"],
-    techStack: ["Git", "VS Code", "Android Studio", "GitHub Actions", "Docker", "Node.js", "Firebase"],
-    githubUrl: "https://github.com/SurajChaurasia84",
-    portfolioUrl: "https://suraj.dev",
-    followersCount: 1240,
-    followingCount: 382,
-    postsCount: 3,
-    projectsCount: 3,
-    about: "Hey, I'm Suraj Chaurasia! I love writing clean Flutter layouts, learning Kotlin compilers, and building developer tools in public. Mostly focusing on crafting dark modes and highly responsive micro-animations.",
-    interests: ["Open Source", "Mobile Development", "System Design", "UI/UX Design", "Kotlin Compilers"],
-    links: [
-      ProfileLink(platform: "GitHub", url: "https://github.com/SurajChaurasia84"),
-      ProfileLink(platform: "Portfolio", url: "https://suraj.dev"),
-      ProfileLink(platform: "Twitter/X", url: "https://twitter.com/suraj_dev"),
-      ProfileLink(platform: "LinkedIn", url: "https://linkedin.com/in/surajchaurasia"),
-    ],
+    name: "",
+    username: "",
+    avatarUrl: "",
+    bio: "",
+    skills: [],
+    techStack: [],
+    githubUrl: "",
+    portfolioUrl: "",
+    followersCount: 0,
+    followingCount: 0,
+    postsCount: 0,
+    projectsCount: 0,
+    about: "",
+    interests: [],
+    links: [],
   );
   UserProfile get currentUser => _currentUser;
 
-  List<Post> _posts = [];
+  final List<Post> _posts = [];
   List<Post> get posts => _posts;
 
-  List<Community> _communities = [];
+  final List<Community> _communities = [];
   List<Community> get communities => _communities;
 
-  List<Project> _projects = [];
+  final List<Project> _projects = [];
   List<Project> get projects => _projects;
 
-  List<DevsNotification> _notifications = [];
+  final List<DevsNotification> _notifications = [];
   List<DevsNotification> get notifications => _notifications;
 
-  AppState() {
-    _initData();
-  }
-
-  void _initData() {
-    // 1. Initial Communities
-    _communities = [
-      Community(
-        id: "c1",
-        name: "Flutter",
-        description: "Official community for Flutter developers to share progress, packages, and code snippets.",
-        coverImageIndex: 0,
-        memberCount: 14200,
-        isJoined: true,
-      ),
-      Community(
-        id: "c2",
-        name: "React",
-        description: "Modern web UI library and framework discussions, Next.js, and typescript architecture.",
-        coverImageIndex: 1,
-        memberCount: 22500,
-        isJoined: false,
-      ),
-      Community(
-        id: "c3",
-        name: "Python",
-        description: "Data science, script automation, backend development, and general Python coding guidelines.",
-        coverImageIndex: 2,
-        memberCount: 31100,
-        isJoined: false,
-      ),
-      Community(
-        id: "c4",
-        name: "AI/ML",
-        description: "Deep learning, LLMs, neural networks, computer vision, and prompt engineering.",
-        coverImageIndex: 3,
-        memberCount: 18400,
-        isJoined: true,
-      ),
-      Community(
-        id: "c5",
-        name: "Android",
-        description: "Kotlin, Jetpack Compose, native Android performance tuning, and architecture.",
-        coverImageIndex: 4,
-        memberCount: 11800,
-        isJoined: false,
-      ),
-      Community(
-        id: "c6",
-        name: "Web Development",
-        description: "HTML, CSS, JavaScript, node, backend servers, and web design optimization standards.",
-        coverImageIndex: 5,
-        memberCount: 28900,
-        isJoined: false,
-      ),
-    ];
-
-    // 2. Initial Projects (Owned by current user or showcase)
-    _projects = [
-      Project(
-        id: "p1",
-        title: "Devs Android App",
-        description: "A premium social ecosystem built for developer collaboration. Supports code highlights, build showcased public projects, and light/dark themes.",
-        imagePlaceholder: "devs_app",
-        techStack: ["Flutter", "Dart", "Material 3", "ChangeNotifier"],
-        githubUrl: "https://github.com/SurajChaurasia84/Devs",
-        demoUrl: "https://devs.app/demo",
-      ),
-      Project(
-        id: "p2",
-        title: "FastRegex Highlighter",
-        description: "A lightweight parser custom built to highlight code structures in modern developer interfaces using minimalist design principles.",
-        imagePlaceholder: "auth_screen",
-        techStack: ["Dart", "Regular Expressions", "TextSpan"],
-        githubUrl: "https://github.com/SurajChaurasia84/FastRegex",
-        demoUrl: "https://pub.dev/packages/fast_regex",
-      ),
-      Project(
-        id: "p3",
-        title: "GitStream Workflows",
-        description: "An automated pipeline runner that compiles, tests, and deploys multi-platform Flutter apps directly to stores using Docker containers.",
-        imagePlaceholder: "pipeline_runs",
-        techStack: ["Kotlin", "Docker", "GitHub Actions", "Shell"],
-        githubUrl: "https://github.com/SurajChaurasia84/GitStream",
-        demoUrl: "https://github.com/SurajChaurasia84/GitStream/actions",
-      ),
-    ];
-
-    // 3. Initial Posts
-    _posts = [
-      Post(
-        id: "post_1",
-        authorName: "Alex Rivera",
-        authorUsername: "alex_dev",
-        authorAvatarUrl: "A",
-        content: "Finally shipping the Devs Android app UI! The dynamic theme toggling is super smooth. Let me know what you think of the custom code highlighter implementation. Check out the main entry code below:",
-        type: "code",
-        codeLanguage: "dart",
-        codeSnippet: """import 'package:flutter/material.dart';
-import 'theme/app_theme.dart';
-import 'screens/main_navigation_screen.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Devs',
-      theme: AppTheme.darkTheme,
-      darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.dark,
-      home: const MainNavigationScreen(),
-    );
-  }
-}""",
-        likesCount: 42,
-        isLiked: false,
-        commentsCount: 2,
-        isSaved: false,
-        timeAgo: "2h ago",
-        comments: [
-          Comment(
-            id: "cmt_1",
-            userName: "Dan Williamson",
-            userUsername: "dan_code",
-            userAvatarUrl: "D",
-            content: "This looks incredibly clean! Love the custom font rendering.",
-            timeAgo: "50m ago",
-          ),
-          Comment(
-            id: "cmt_2",
-            userName: "Sarah Chen",
-            userUsername: "sarah_ai",
-            userAvatarUrl: "S",
-            content: "Stunning work! The bottom sheet drawer animation is very smooth.",
-            timeAgo: "30m ago",
-          ),
-        ],
-      ),
-      Post(
-        id: "post_2",
-        authorName: "Sarah Chen",
-        authorUsername: "sarah_ai",
-        authorAvatarUrl: "S",
-        content: "Just finished training a custom parser for syntax highlighting using only black, white, gray, and blue tokens. Fits perfectly with our design constraint rules! Check out the showcase details.",
-        type: "project",
-        projectTitle: "SyntaxHighlight-Parser",
-        projectDescription: "A custom light weight regex parser optimized for code snippets with minimalist highlight themes.",
-        likesCount: 89,
-        isLiked: false,
-        commentsCount: 1,
-        isSaved: false,
-        timeAgo: "4h ago",
-        comments: [
-          Comment(
-            id: "cmt_3",
-            userName: "Emily Watson",
-            userUsername: "emily_web",
-            userAvatarUrl: "E",
-            content: "Exactly what I was looking for! Will definitely read the source code.",
-            timeAgo: "2h ago",
-          ),
-        ],
-      ),
-      Post(
-        id: "post_3",
-        authorName: "Dan Williamson",
-        authorUsername: "dan_code",
-        authorAvatarUrl: "D",
-        content: "Starting my day by reviewing some old Kotlin logic. Clean architecture is always worth the extra setup time. Writing domain repositories with Result models keeps errors clean:",
-        type: "code",
-        codeLanguage: "kotlin",
-        codeSnippet: """class UserUseCase(private val repository: UserRepository) {
-    suspend fun execute(userId: String): Result<User> {
-        return try {
-            val user = repository.getUser(userId)
-            Result.success(user)
-        } catch (e: Exception) {
-            Result.failure(e)
-        }
-    }
-}""",
-        likesCount: 19,
-        isLiked: false,
-        commentsCount: 0,
-        isSaved: false,
-        timeAgo: "5h ago",
-        comments: [],
-      ),
-      Post(
-        id: "post_4",
-        authorName: "Emily Watson",
-        authorUsername: "emily_web",
-        authorAvatarUrl: "E",
-        content: "A sneak peek of the dashboard layout I'm building for a server monitoring client. Clean dark theme, responsive grid cards, status highlights. Almost ready for demo deployment!",
-        type: "screenshot",
-        screenshotPlaceholderType: "dashboard",
-        likesCount: 124,
-        isLiked: true,
-        commentsCount: 0,
-        isSaved: true,
-        timeAgo: "1d ago",
-        comments: [],
-      ),
-    ];
-
-    // 4. Initial Notifications
-    _notifications = [
-      DevsNotification(
-        id: "n1",
-        type: "like",
-        userName: "Sarah Chen",
-        userUsername: "sarah_ai",
-        userAvatarUrl: "S",
-        actionDetails: "liked your project showcase FastRegex Highlighter",
-        timeAgo: "10m ago",
-      ),
-      DevsNotification(
-        id: "n2",
-        type: "comment",
-        userName: "Dan Williamson",
-        userUsername: "dan_code",
-        userAvatarUrl: "D",
-        actionDetails: "commented: 'Awesome UI design, very snappy!'",
-        timeAgo: "45m ago",
-      ),
-      DevsNotification(
-        id: "n3",
-        type: "follow",
-        userName: "Alex Rivera",
-        userUsername: "alex_dev",
-        userAvatarUrl: "A",
-        actionDetails: "started following you",
-        timeAgo: "2h ago",
-      ),
-      DevsNotification(
-        id: "n4",
-        type: "mention",
-        userName: "Emily Watson",
-        userUsername: "emily_web",
-        userAvatarUrl: "E",
-        actionDetails: "mentioned you: 'Check out @suraj_dev's project showcase'",
-        timeAgo: "1d ago",
-      ),
-    ];
-  }
+  AppState({bool initialDarkMode = true}) : _isDarkMode = initialDarkMode;
 
   // --- ACTIONS ---
 
-  void toggleTheme() {
+  Future<void> toggleTheme() async {
     _isDarkMode = !_isDarkMode;
     notifyListeners();
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('is_dark_mode', _isDarkMode);
+    } catch (e) {
+      debugPrint('Error saving theme preference: $e');
+    }
   }
 
   void toggleLike(String postId) {
@@ -429,9 +182,134 @@ class MyApp extends StatelessWidget {
     notifyListeners();
   }
 
-  void updateProfile(UserProfile profile) {
+  Future<void> loadUserProfile() async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) return;
+
+    try {
+      final data = await Supabase.instance.client
+          .from('profiles')
+          .select()
+          .eq('id', user.id)
+          .maybeSingle();
+
+      if (data != null) {
+        // Load custom links if table exists
+        List<ProfileLink> profileLinks = [];
+        try {
+          final linksRes = await Supabase.instance.client
+              .from('profile_links')
+              .select()
+              .eq('profile_id', user.id);
+          
+          profileLinks = linksRes.map((l) {
+            return ProfileLink(
+              platform: l['platform'] ?? '',
+              url: l['url'] ?? '',
+            );
+          }).toList();
+        } catch (e) {
+          // Ignore table-not-found / RLS errors
+        }
+
+        _currentUser = UserProfile(
+          name: data['name'] ?? 'New Developer',
+          username: data['username'] ?? user.email!.split('@')[0],
+          avatarUrl: data['avatar_url'] ?? 'https://api.dicebear.com/7.x/bottts/png?seed=${user.id}',
+          bio: data['bio'] ?? 'Joined Devs community!',
+          skills: data['skills'] != null ? List<String>.from(data['skills']) : [],
+          techStack: data['tech_stack'] != null ? List<String>.from(data['tech_stack']) : [],
+          githubUrl: data['github_url'] ?? '',
+          portfolioUrl: data['portfolio_url'] ?? '',
+          followersCount: data['followers_count'] ?? 0,
+          followingCount: data['following_count'] ?? 0,
+          postsCount: data['posts_count'] ?? 0,
+          projectsCount: data['projects_count'] ?? 0,
+          about: data['about'] ?? '',
+          interests: data['interests'] != null ? List<String>.from(data['interests']) : [],
+          links: profileLinks,
+        );
+        notifyListeners();
+      }
+    } catch (e) {
+      debugPrint('Error loading user profile: $e');
+    }
+  }
+
+  Future<void> updateProfile(UserProfile profile) async {
     _currentUser = profile;
     notifyListeners();
+
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user != null) {
+      try {
+        await Supabase.instance.client.from('profiles').upsert({
+          'id': user.id,
+          'name': profile.name,
+          'username': profile.username,
+          'bio': profile.bio,
+          'email': user.email,
+          'avatar_url': profile.avatarUrl,
+          'skills': profile.skills,
+          'tech_stack': profile.techStack,
+          'github_url': profile.githubUrl,
+          'portfolio_url': profile.portfolioUrl,
+          'followers_count': profile.followersCount,
+          'following_count': profile.followingCount,
+          'posts_count': profile.postsCount,
+          'projects_count': profile.projectsCount,
+          'about': profile.about,
+          'interests': profile.interests,
+        });
+
+        // Sync links
+        try {
+          await Supabase.instance.client
+              .from('profile_links')
+              .delete()
+              .eq('profile_id', user.id);
+
+          if (profile.links.isNotEmpty) {
+            final linkRows = profile.links.map((link) => {
+              'profile_id': user.id,
+              'platform': link.platform,
+              'url': link.url,
+            }).toList();
+            await Supabase.instance.client.from('profile_links').insert(linkRows);
+          }
+        } catch (e) {
+          // Table may not exist or RLS issue, ignore
+        }
+      } catch (e) {
+        debugPrint('Error updating profile in Supabase: $e');
+      }
+    }
+  }
+
+  Future<bool> checkAndLoadProfile(String userId) async {
+    try {
+      final res = await Supabase.instance.client
+          .from('profiles')
+          .select('name, username')
+          .eq('id', userId)
+          .maybeSingle();
+
+      if (res != null && 
+          res['name'] != null && 
+          res['name'].toString().isNotEmpty && 
+          res['username'] != null && 
+          res['username'].toString().isNotEmpty) {
+        await loadUserProfile();
+        return true;
+      }
+    } catch (e) {
+      debugPrint('Error checking profile: $e');
+    }
+    return false;
+  }
+
+  Future<void> signOut() async {
+    await Supabase.instance.client.auth.signOut();
   }
 
   void addProject(Project project) {
