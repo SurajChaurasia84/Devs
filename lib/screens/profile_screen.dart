@@ -313,11 +313,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             color: textPrimary,
                           ),
                           onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('More options clicked'),
-                                duration: Duration(milliseconds: 700),
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                               ),
+                              builder: (context) {
+                                final isDark = Theme.of(context).brightness == Brightness.dark;
+                                final borderCol = isDark ? AppTheme.darkBorder : AppTheme.lightBorder;
+                                return SafeArea(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        width: 40,
+                                        height: 4,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.withValues(alpha: 0.3),
+                                          borderRadius: BorderRadius.circular(2),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ListTile(
+                                        leading: const Icon(LucideIcons.settings, size: 20),
+                                        title: const Text('Settings', style: TextStyle(fontSize: 14)),
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Settings coming soon!')),
+                                          );
+                                        },
+                                      ),
+                                      Divider(color: borderCol, height: 1),
+                                      ListTile(
+                                        leading: const Icon(LucideIcons.logOut, size: 20, color: Colors.redAccent),
+                                        title: const Text(
+                                          'Sign Out',
+                                          style: TextStyle(fontSize: 14, color: Colors.redAccent, fontWeight: FontWeight.bold),
+                                        ),
+                                        onTap: () async {
+                                          Navigator.pop(context);
+                                          await Provider.of<AppState>(context, listen: false).signOut();
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             );
                           },
                         ),
@@ -389,29 +433,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             const SizedBox(height: 12),
                             
-                            // Links Row
-                            SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: user.links.isEmpty
-                                    ? [
-                                        _buildLinkChip(context, 'GitHub', user.githubUrl),
-                                        const SizedBox(width: 8),
-                                        _buildLinkChip(context, 'Portfolio', user.portfolioUrl),
-                                      ]
-                                    : user.links.map((link) {
-                                        return Padding(
-                                          padding: const EdgeInsets.only(right: 8),
-                                          child: _buildLinkChip(
-                                            context,
-                                            link.platform,
-                                            link.url,
-                                          ),
-                                        );
-                                      }).toList(),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
+                             // Links Row
+                             SingleChildScrollView(
+                               scrollDirection: Axis.horizontal,
+                               child: Row(
+                                 children: (user.links.isEmpty && user.githubUrl.isEmpty && user.portfolioUrl.isEmpty)
+                                     ? [
+                                         Text(
+                                           'No social links added',
+                                           style: TextStyle(
+                                             color: textSecondary.withValues(alpha: 0.5),
+                                             fontSize: 12,
+                                             fontStyle: FontStyle.italic,
+                                           ),
+                                         ),
+                                       ]
+                                     : user.links.isEmpty
+                                         ? [
+                                             if (user.githubUrl.isNotEmpty)
+                                               _buildLinkChip(context, 'GitHub', user.githubUrl),
+                                             if (user.githubUrl.isNotEmpty && user.portfolioUrl.isNotEmpty)
+                                               const SizedBox(width: 8),
+                                             if (user.portfolioUrl.isNotEmpty)
+                                               _buildLinkChip(context, 'Portfolio', user.portfolioUrl),
+                                           ]
+                                         : user.links.map((link) {
+                                             return Padding(
+                                               padding: const EdgeInsets.only(right: 8),
+                                               child: _buildLinkChip(
+                                                 context,
+                                                 link.platform,
+                                                 link.url,
+                                               ),
+                                             );
+                                           }).toList(),
+                               ),
+                             ),
+                             const SizedBox(height: 16),
                             
                             // Stats metrics row
                             Row(
@@ -468,7 +526,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     // Tab 1: Posts Tab
                     userPosts.isEmpty
-                        ? _buildEmptyTabState('No updates posted yet.')
+                        ? _buildEmptyTabState('No updates posted yet.', LucideIcons.fileText)
                         : ListView.builder(
                             key: const PageStorageKey<String>('posts_tab'),
                             padding: const EdgeInsets.all(12),
@@ -485,7 +543,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           
                     // Tab 2: Projects Tab
                     userProjects.isEmpty
-                        ? _buildEmptyTabState('No projects published yet.')
+                        ? _buildEmptyTabState('No projects published yet.', LucideIcons.folder)
                         : ListView.builder(
                             key: const PageStorageKey<String>('projects_tab'),
                             padding: const EdgeInsets.all(12),
@@ -612,17 +670,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
 
-  Widget _buildEmptyTabState(String message) {
+  Widget _buildEmptyTabState(String message, IconData icon) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textSecondary = isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary;
+
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
-        child: Text(
-          message,
-          style: TextStyle(
-            color: isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary,
-            fontSize: 13,
-          ),
+        padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 40),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 32,
+              color: textSecondary.withValues(alpha: 0.4),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: textSecondary.withValues(alpha: 0.8),
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
         ),
       ),
     );

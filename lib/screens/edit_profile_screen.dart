@@ -397,7 +397,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
 
     // Update global state
-    appState.updateProfile(updatedProfile);
+    await appState.updateProfile(updatedProfile);
 
     // Save updated projects
     // First, delete ones not in local copy
@@ -420,6 +420,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       _isSaving = false;
     });
+
+    if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
