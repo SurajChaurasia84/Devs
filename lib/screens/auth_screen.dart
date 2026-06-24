@@ -161,6 +161,7 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
         final response = await Supabase.instance.client.auth.signUp(
           email: email,
           password: password,
+          emailRedirectTo: 'devs://login-callback',
         );
 
         if (response.user != null && mounted) {
@@ -233,32 +234,30 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
       body: Stack(
         children: [
           // 1. Ambient Background Blurred Circles (Notion/Linear style)
-          if (isDark) ...[
-            Positioned(
-              top: -80,
-              left: -80,
-              child: Container(
-                width: 250,
-                height: 250,
-                decoration: BoxDecoration(
-                  color: AppTheme.primaryBlue.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
+          Positioned(
+            top: -80,
+            left: -80,
+            child: Container(
+              width: 250,
+              height: 250,
+              decoration: BoxDecoration(
+                color: AppTheme.primaryBlue.withValues(alpha: isDark ? 0.15 : 0.05),
+                shape: BoxShape.circle,
               ),
             ),
-            Positioned(
-              bottom: -100,
-              right: -50,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF6B4EE6).withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
+          ),
+          Positioned(
+            bottom: -100,
+            right: -50,
+            child: Container(
+              width: 300,
+              height: 300,
+              decoration: BoxDecoration(
+                color: const Color(0xFF6B4EE6).withValues(alpha: isDark ? 0.1 : 0.04),
+                shape: BoxShape.circle,
               ),
             ),
-          ],
+          ),
           
           // 2. Main Content
           SafeArea(
