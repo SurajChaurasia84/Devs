@@ -72,28 +72,7 @@ class MyApp extends StatelessWidget {
                 }
 
                 // User is authenticated, check if their profile is complete
-                return FutureBuilder<bool>(
-                  future: Provider.of<AppState>(context, listen: false)
-                      .checkAndLoadProfile(session.user.id),
-                  builder: (context, profileSnapshot) {
-                    if (profileSnapshot.connectionState == ConnectionState.waiting) {
-                      return const Scaffold(
-                        body: Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
-                          ),
-                        ),
-                      );
-                    }
-
-                    final hasProfile = profileSnapshot.data ?? false;
-                    if (hasProfile) {
-                      return const MainNavigationScreen();
-                    } else {
-                      return const OnboardingScreen();
-                    }
-                  },
-                );
+                return ProfileCheckScreen(userId: session.user.id);
               },
             ),
           );
@@ -102,3 +81,48 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+class ProfileCheckScreen extends StatefulWidget {
+  final String userId;
+  const ProfileCheckScreen({super.key, required this.userId});
+
+  @override
+  State<ProfileCheckScreen> createState() => _ProfileCheckScreenState();
+}
+
+class _ProfileCheckScreenState extends State<ProfileCheckScreen> {
+  late Future<bool> _profileCheckFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _profileCheckFuture = Provider.of<AppState>(context, listen: false)
+        .checkAndLoadProfile(widget.userId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _profileCheckFuture,
+      builder: (context, profileSnapshot) {
+        if (profileSnapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
+              ),
+            ),
+          );
+        }
+
+        final hasProfile = profileSnapshot.data ?? false;
+        if (hasProfile) {
+          return const MainNavigationScreen();
+        } else {
+          return const OnboardingScreen();
+        }
+      },
+    );
+  }
+}
+
