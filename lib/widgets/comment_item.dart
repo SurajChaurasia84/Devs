@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'user_avatar.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 
@@ -22,22 +23,10 @@ class CommentItem extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Avatar
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            child: Text(
-              comment.userAvatarUrl,
-              style: TextStyle(
-                color: textPrimary,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-              ),
-            ),
+          UserAvatar(
+            avatarUrl: comment.userAvatarUrl,
+            size: 32,
+            isDark: isDark,
           ),
           const SizedBox(width: 12),
           // Comment Details
