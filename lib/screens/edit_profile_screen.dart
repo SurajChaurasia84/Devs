@@ -1,5 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:iconsax/iconsax.dart';
 import '../data/mock_data.dart';
@@ -38,6 +41,84 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   bool _isSaving = false;
   bool _initialized = false;
+
+  Future<String?> _cropImage(String filePath, {required bool isProfile}) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      aspectRatio: isProfile 
+          ? const CropAspectRatio(ratioX: 1, ratioY: 1)
+          : const CropAspectRatio(ratioX: 3, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: isProfile ? 'Crop Profile' : 'Crop Banner',
+          toolbarColor: AppTheme.primaryBlue,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: isProfile 
+              ? CropAspectRatioPreset.square 
+              : CropAspectRatioPreset.original,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: isProfile ? 'Crop Profile' : 'Crop Banner',
+          aspectRatioLockEnabled: true,
+          resetAspectRatioEnabled: false,
+        ),
+      ],
+    );
+    return croppedFile?.path;
+  }
+
+  Future<void> _pickImageFromGallery({required bool isProfile}) async {
+    final appState = Provider.of<AppState>(context, listen: false);
+    Navigator.pop(context); // Close sheet
+    try {
+      final picker = ImagePicker();
+      final pickedFile = await picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: isProfile ? 400 : 900,
+        maxHeight: isProfile ? 400 : 300,
+        imageQuality: isProfile ? 85 : 80,
+      );
+
+      if (pickedFile != null) {
+        final croppedPath = await _cropImage(pickedFile.path, isProfile: isProfile);
+        if (croppedPath != null) {
+          if (!mounted) return;
+          setState(() {
+            _isSaving = true;
+          });
+          
+          final file = File(croppedPath);
+          final publicUrl = await appState.uploadProfileImage(file, isProfile: isProfile);
+          
+          if (!mounted) return;
+          setState(() {
+            if (isProfile) {
+              _selectedAvatarUrl = publicUrl;
+            } else {
+              _selectedBannerUrl = publicUrl;
+            }
+          });
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString().replaceAll("Exception:", "").trim()),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -181,6 +262,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 isProfile ? 'Change Profile Picture' : 'Change Banner Image',
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: () => _pickImageFromGallery(isProfile: isProfile),
+                icon: const Icon(LucideIcons.image, size: 16),
+                label: Text(isProfile ? 'Choose from Gallery' : 'Choose from Gallery'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryBlue.withAlpha(26),
+                  foregroundColor: AppTheme.primaryBlue,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: const BorderSide(color: AppTheme.primaryBlue, width: 1),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
               ),
               const SizedBox(height: 16),
               const Text(
