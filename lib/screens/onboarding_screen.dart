@@ -1,10 +1,10 @@
-import 'dart:convert';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import '../data/mock_data.dart';
 import '../theme/app_theme.dart';
@@ -271,28 +271,56 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     );
   }
 
+  Future<String?> _cropImage(String filePath, {required bool isProfile}) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: filePath,
+      aspectRatio: isProfile 
+          ? const CropAspectRatio(ratioX: 1, ratioY: 1)
+          : const CropAspectRatio(ratioX: 3, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: isProfile ? 'Crop Profile' : 'Crop Banner',
+          toolbarColor: AppTheme.primaryBlue,
+          toolbarWidgetColor: Colors.white,
+          initAspectRatio: isProfile 
+              ? CropAspectRatioPreset.square 
+              : CropAspectRatioPreset.original,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: isProfile ? 'Crop Profile' : 'Crop Banner',
+          aspectRatioLockEnabled: true,
+          resetAspectRatioEnabled: false,
+        ),
+      ],
+    );
+    return croppedFile?.path;
+  }
+
   Future<void> _pickImageFromGallery({required bool isProfile}) async {
     Navigator.pop(context); // Close sheet
     try {
       final picker = ImagePicker();
       final pickedFile = await picker.pickImage(
         source: ImageSource.gallery,
-        // Compress photo size for database inline base64 performance
-        maxWidth: isProfile ? 200 : 600,
-        maxHeight: isProfile ? 200 : 200,
-        imageQuality: 80,
+        maxWidth: isProfile ? 400 : 900,
+        maxHeight: isProfile ? 400 : 300,
+        imageQuality: isProfile ? 85 : 80,
       );
 
       if (pickedFile != null) {
-        setState(() {
-          if (isProfile) {
-            _localAvatarFile = File(pickedFile.path);
-            _selectedAvatarUrl = "";
-          } else {
-            _localBannerFile = File(pickedFile.path);
-            _selectedBannerUrl = "";
-          }
-        });
+        final croppedPath = await _cropImage(pickedFile.path, isProfile: isProfile);
+        if (croppedPath != null) {
+          setState(() {
+            if (isProfile) {
+              _localAvatarFile = File(croppedPath);
+              _selectedAvatarUrl = "";
+            } else {
+              _localBannerFile = File(croppedPath);
+              _selectedBannerUrl = "";
+            }
+          });
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -317,18 +345,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       final name = '${_firstNameController.text.trim()} ${_lastNameController.text.trim()}'.trim();
       final username = _usernameController.text.trim().toLowerCase();
 
-      // Convert local images to Base64 data URLs to avoid Supabase storage setup failures
+      // Upload local images to Supabase Storage if selected, otherwise fallback to presets/URLs
       String avatarUrl = _selectedAvatarUrl;
       String bannerUrl = _selectedBannerUrl;
 
       if (!isSkipped) {
+        final appState = Provider.of<AppState>(context, listen: false);
         if (_localAvatarFile != null) {
-          final bytes = await _localAvatarFile!.readAsBytes();
-          avatarUrl = 'data:image/png;base64,${base64Encode(bytes)}';
+          try {
+            avatarUrl = await appState.uploadProfileImage(_localAvatarFile!, isProfile: true);
+          } catch (e) {
+            throw Exception("Failed to upload avatar to Supabase Storage. Please ensure you have created a public bucket named 'avatars' in your Supabase storage dashboard. Error: $e");
+          }
         }
         if (_localBannerFile != null) {
-          final bytes = await _localBannerFile!.readAsBytes();
-          bannerUrl = 'data:image/png;base64,${base64Encode(bytes)}';
+          try {
+            bannerUrl = await appState.uploadProfileImage(_localBannerFile!, isProfile: false);
+          } catch (e) {
+            throw Exception("Failed to upload banner to Supabase Storage. Please ensure you have created a public bucket named 'avatars' in your Supabase storage dashboard. Error: $e");
+          }
         }
       }
 
