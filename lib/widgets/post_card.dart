@@ -1,5 +1,6 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'user_avatar.dart';
 import 'package:iconsax/iconsax.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
@@ -260,22 +261,10 @@ class _PostCardState extends State<PostCard> with SingleTickerProviderStateMixin
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Author Avatar
-                Container(
-                  width: 38,
-                  height: 38,
-                  decoration: BoxDecoration(
-                    color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
-                    shape: BoxShape.circle,
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    widget.post.authorAvatarUrl,
-                    style: TextStyle(
-                      color: textPrimary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
+                UserAvatar(
+                  avatarUrl: widget.post.authorAvatarUrl,
+                  size: 38,
+                  isDark: isDark,
                 ),
                 const SizedBox(width: 12),
                 
