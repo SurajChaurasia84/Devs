@@ -658,7 +658,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   validator: (val) => val == null || val.trim().isEmpty ? 'Username is required' : null,
                                 ),
                                 const SizedBox(height: 16),
-                                _buildInputLabel('Tagline / Bio'),
+                                _buildInputLabel('Bio'),
                                 TextFormField(
                                   controller: _bioController,
                                   maxLines: 2,
