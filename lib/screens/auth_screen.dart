@@ -273,18 +273,22 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
                       // Header Section
                       Column(
                         children: [
-                          // App Logo Minimal Representation
                           Container(
-                            padding: const EdgeInsets.all(12),
+                            width: 56,
+                            height: 56,
                             decoration: BoxDecoration(
                               color: isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF0F2F5),
                               border: Border.all(color: borderCol, width: 1),
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
-                              Icons.code_rounded,
-                              color: AppTheme.primaryBlue,
-                              size: 28,
+                            alignment: Alignment.center,
+                            child: ClipOval(
+                              child: Image.asset(
+                                'assets/icon.png',
+                                width: 36,
+                                height: 36,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 18),
