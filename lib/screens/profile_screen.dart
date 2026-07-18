@@ -1,13 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
-import 'package:iconsax/iconsax.dart';
 import '../data/mock_data.dart';
 import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import '../widgets/post_card.dart';
 import '../widgets/project_card.dart';
 import '../widgets/skill_tag.dart';
+import '../widgets/user_avatar.dart';
 import 'edit_profile_screen.dart';
 import '../utils/link_utils.dart';
 
@@ -54,13 +55,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Build the custom grid/blueprint background banner for developer profile
   Widget _buildBanner(BuildContext context, bool isDark, String? bannerImage) {
-    if (bannerImage != null && bannerImage.startsWith("http")) {
+    if (bannerImage != null && (bannerImage.startsWith("http") || bannerImage.startsWith("https"))) {
       return Image.network(
         bannerImage,
         fit: BoxFit.cover,
         width: double.infinity,
         height: double.infinity,
       );
+    } else if (bannerImage != null && bannerImage.startsWith("data:image")) {
+      try {
+        final base64String = bannerImage.split(',').last;
+        final bytes = base64Decode(base64String);
+        return Image.memory(
+          bytes,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        );
+      } catch (e) {
+        // Fallback
+      }
     }
     
     final gridColor = isDark ? const Color(0xFF1E1E1E) : const Color(0xFFE5E5E5);
@@ -118,89 +132,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildAvatarWidget(String avatarUrl, bool isDark) {
-    if (avatarUrl.length == 1) {
-      return Container(
-        width: 66,
-        height: 66,
-        decoration: const BoxDecoration(
-          color: AppTheme.primaryBlue,
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          avatarUrl,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 32,
-          ),
-        ),
-      );
-    } else if (avatarUrl.startsWith('http') || avatarUrl.startsWith('https')) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(33),
-        child: Image.network(
-          avatarUrl,
-          width: 66,
-          height: 66,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Icon(
-            Iconsax.profile_circle5,
-            size: 66,
-            color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
-          ),
-        ),
-      );
-    } else {
-      return Icon(
-        Iconsax.profile_circle5,
-        size: 66,
-        color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
-      );
-    }
+    return UserAvatar(avatarUrl: avatarUrl, size: 66, isDark: isDark);
   }
 
   Widget _buildSmallAvatarWidget(String avatarUrl, bool isDark) {
-    if (avatarUrl.length == 1) {
-      return Container(
-        width: 36,
-        height: 36,
-        decoration: const BoxDecoration(
-          color: AppTheme.primaryBlue,
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          avatarUrl,
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-      );
-    } else if (avatarUrl.startsWith('http') || avatarUrl.startsWith('https')) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(18),
-        child: Image.network(
-          avatarUrl,
-          width: 36,
-          height: 36,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) => Icon(
-            Iconsax.profile_circle5,
-            size: 36,
-            color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
-          ),
-        ),
-      );
-    } else {
-      return Icon(
-        Iconsax.profile_circle5,
-        size: 36,
-        color: isDark ? const Color(0xFFA0A0A0) : const Color(0xFF536471),
-      );
-    }
+    return UserAvatar(avatarUrl: avatarUrl, size: 36, isDark: isDark);
   }
 
   void _launchURL(BuildContext context, String url) {
