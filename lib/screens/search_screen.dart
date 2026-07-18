@@ -1,8 +1,8 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/mock_data.dart';
-import '../models/data_models.dart';
 import '../theme/app_theme.dart';
 import '../widgets/community_card.dart';
 import '../widgets/project_card.dart';
@@ -16,42 +16,10 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final _searchController = TextEditingController();
-  String _activeTab = 'devs'; // 'devs', 'groups', 'projects'
   String _searchQuery = '';
 
-  // Seed developers database for search (excluding current user)
-  final List<Map<String, String>> _mockDevelopers = [
-    {
-      "name": "Alex Rivera",
-      "username": "alex_dev",
-      "avatar": "A",
-      "bio": "Senior Flutter Engineer. Shipping apps in public. Open-source maintainer.",
-    },
-    {
-      "name": "Sarah Chen",
-      "username": "sarah_ai",
-      "avatar": "S",
-      "bio": "AI/ML Researcher. Prompt engineering & custom local model fine-tuning.",
-    },
-    {
-      "name": "Dan Williamson",
-      "username": "dan_code",
-      "avatar": "D",
-      "bio": "Fullstack web developer. React, Next.js, and Node.js optimization.",
-    },
-    {
-      "name": "Emily Watson",
-      "username": "emily_web",
-      "avatar": "E",
-      "bio": "React Developer. Passionate about WebGL and interactive web animations.",
-    },
-    {
-      "name": "Marcus Aurelius",
-      "username": "philosopher_dev",
-      "avatar": "M",
-      "bio": "Systems Engineer. Rust, assembly language, and kernel-level programming.",
-    },
-  ];
+  List<Map<String, dynamic>> _dbDevelopers = [];
+  bool _isLoadingDevs = true;
 
   final Set<String> _followedUsernames = {};
 
@@ -63,6 +31,89 @@ class _SearchScreenState extends State<SearchScreen> {
         _searchQuery = _searchController.text.toLowerCase().trim();
       });
     });
+    _fetchDevelopers();
+  }
+
+  Future<void> _fetchDevelopers() async {
+    try {
+      final currentUser = Supabase.instance.client.auth.currentUser;
+      var query = Supabase.instance.client.from('profiles').select();
+      
+      if (currentUser != null) {
+        query = query.not('id', 'eq', currentUser.id);
+      }
+      
+      final data = await query;
+      if (mounted) {
+        setState(() {
+          _dbDevelopers = List<Map<String, dynamic>>.from(data);
+          _isLoadingDevs = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Error fetching developers from database: $e');
+      if (mounted) {
+        setState(() {
+          _isLoadingDevs = false;
+        });
+      }
+    }
+  }
+
+  Widget _buildDevAvatar(String avatarUrl, String name, Color textPrimary, Color borderCol) {
+    final firstLetter = name.isNotEmpty ? name[0].toUpperCase() : 'D';
+    
+    if (avatarUrl.isEmpty) {
+      return Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: borderCol,
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          firstLetter,
+          style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+      );
+    } else if (avatarUrl.length == 1) {
+      return Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          color: borderCol,
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          avatarUrl.toUpperCase(),
+          style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
+        ),
+      );
+    } else {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Image.network(
+          avatarUrl,
+          width: 40,
+          height: 40,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Container(
+              width: 40,
+              height: 40,
+              color: borderCol,
+              alignment: Alignment.center,
+              child: Text(
+                firstLetter,
+                style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+            );
+          },
+        ),
+      );
+    }
   }
 
   @override
@@ -79,122 +130,294 @@ class _SearchScreenState extends State<SearchScreen> {
     final borderCol = isDark ? AppTheme.darkBorder : AppTheme.lightBorder;
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Sleek Search input bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: theme.cardColor,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: borderCol, width: 1),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  children: [
-                    Icon(LucideIcons.search, color: textSecondary, size: 20),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        style: TextStyle(color: textPrimary, fontSize: 14),
-                        decoration: InputDecoration(
-                          hintText: 'Search devs, communities, or projects...',
-                          hintStyle: TextStyle(color: textSecondary, fontSize: 14),
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12),
+    return DefaultTabController(
+      length: 4,
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Sleek Search input bar
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: borderCol, width: 1),
+                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    children: [
+                      Icon(LucideIcons.search, color: textSecondary, size: 20),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: TextField(
+                          controller: _searchController,
+                          style: TextStyle(color: textPrimary, fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: 'Search devs, communities, or projects...',
+                            hintStyle: TextStyle(color: textSecondary, fontSize: 14),
+                            border: InputBorder.none,
+                            isDense: true,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
                         ),
                       ),
+                      if (_searchQuery.isNotEmpty)
+                        GestureDetector(
+                          onTap: () => _searchController.clear(),
+                          child: Icon(LucideIcons.xCircle, color: textSecondary, size: 18),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              // Tabs Category header selector
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: TabBar(
+                    isScrollable: true,
+                    tabAlignment: TabAlignment.start,
+                    dividerColor: Colors.transparent,
+                    padding: EdgeInsets.zero,
+                    labelPadding: const EdgeInsets.only(right: 16),
+                    indicator: const SmallUnderlineTabIndicator(
+                      color: AppTheme.primaryBlue,
+                      width: 16,
+                      strokeWidth: 2,
                     ),
-                    if (_searchQuery.isNotEmpty)
-                      GestureDetector(
-                        onTap: () => _searchController.clear(),
-                        child: Icon(LucideIcons.xCircle, color: textSecondary, size: 18),
-                      ),
+                    labelColor: textPrimary,
+                    unselectedLabelColor: textSecondary,
+                    labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal, fontSize: 13),
+                    tabs: const [
+                      Tab(text: 'All'),
+                      Tab(text: 'Developers'),
+                      Tab(text: 'Communities'),
+                      Tab(text: 'Projects'),
+                    ],
+                  ),
+                ),
+              ),
+              
+              // Search results
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    Consumer<AppState>(
+                      builder: (context, appState, child) {
+                        return _buildAllResults(appState, textPrimary, textSecondary, borderCol);
+                      },
+                    ),
+                    _buildDevsResults(textPrimary, textSecondary, borderCol),
+                    Consumer<AppState>(
+                      builder: (context, appState, child) {
+                        return _buildGroupsResults(appState, textSecondary);
+                      },
+                    ),
+                    Consumer<AppState>(
+                      builder: (context, appState, child) {
+                        return _buildProjectsResults(appState, textSecondary);
+                      },
+                    ),
                   ],
                 ),
               ),
-            ),
-            
-            // Tabs Category header selector
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-              child: Row(
-                children: [
-                  _buildCategoryTab('devs', 'Developers'),
-                  _buildCategoryTab('groups', 'Communities'),
-                  _buildCategoryTab('projects', 'Projects'),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10),
-            
-            // Search results
-            Expanded(
-              child: Consumer<AppState>(
-                builder: (context, appState, child) {
-                  if (_activeTab == 'devs') {
-                    return _buildDevsResults(textPrimary, textSecondary, borderCol);
-                  } else if (_activeTab == 'groups') {
-                    return _buildGroupsResults(appState, textSecondary);
-                  } else {
-                    return _buildProjectsResults(appState, textSecondary);
-                  }
-                },
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildCategoryTab(String tabKey, String label) {
-    final isSelected = _activeTab == tabKey;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    
-    return Padding(
-      padding: const EdgeInsets.only(right: 12),
-      child: GestureDetector(
-        onTap: () {
-          setState(() {
-            _activeTab = tabKey;
-          });
-        },
-        child: Column(
-          children: [
-            Text(
-              label,
+  // Render matching Developers, Communities, and Projects in "All" view
+  Widget _buildAllResults(AppState appState, Color textPrimary, Color textSecondary, Color borderCol) {
+    if (_isLoadingDevs) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
+        ),
+      );
+    }
+
+    final filteredDevs = _dbDevelopers.where((dev) {
+      final name = (dev['name'] ?? '').toString().toLowerCase();
+      final username = (dev['username'] ?? '').toString().toLowerCase();
+      final bio = (dev['bio'] ?? '').toString().toLowerCase();
+      return name.contains(_searchQuery) || username.contains(_searchQuery) || bio.contains(_searchQuery);
+    }).toList();
+
+    final filteredGroups = appState.communities.where((comm) {
+      final name = comm.name.toLowerCase();
+      final desc = comm.description.toLowerCase();
+      return name.contains(_searchQuery) || desc.contains(_searchQuery);
+    }).toList();
+
+    final userProjects = appState.projects;
+    final filteredProjects = userProjects.where((proj) {
+      final title = proj.title.toLowerCase();
+      final desc = proj.description.toLowerCase();
+      final tech = proj.techStack.join(' ').toLowerCase();
+      return title.contains(_searchQuery) || desc.contains(_searchQuery) || tech.contains(_searchQuery);
+    }).toList();
+
+    if (filteredDevs.isEmpty && filteredGroups.isEmpty && filteredProjects.isEmpty) {
+      return _buildEmptyState('No results found');
+    }
+
+    return ListView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      children: [
+        if (filteredDevs.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 16, bottom: 8),
+            child: Text(
+              'Developers',
+              style: TextStyle(color: textPrimary, fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+          ...filteredDevs.take(3).map((dev) {
+            final username = dev['username'] ?? '';
+            final isFollowed = _followedUsernames.contains(username);
+            final name = dev['name'] ?? 'Developer';
+            final bio = dev['bio'] ?? '';
+            final avatarUrl = dev['avatar_url'] ?? '';
+
+            return _buildDevRow(avatarUrl, name, username, bio, isFollowed, textPrimary, textSecondary, borderCol);
+          }),
+        ],
+        if (filteredGroups.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 12),
+            child: Text(
+              'Communities',
+              style: TextStyle(color: textPrimary, fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+          ...filteredGroups.take(2).map((community) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: CommunityCard(
+                community: community,
+                onJoinTap: () => appState.toggleJoinCommunity(community.id),
+              ),
+            );
+          }),
+        ],
+        if (filteredProjects.isNotEmpty) ...[
+          Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 12),
+            child: Text(
+              'Projects',
+              style: TextStyle(color: textPrimary, fontSize: 14, fontWeight: FontWeight.bold),
+            ),
+          ),
+          ...filteredProjects.take(3).map((project) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: ProjectCard(
+                project: project,
+              ),
+            );
+          }),
+        ],
+        const SizedBox(height: 24),
+      ],
+    );
+  }
+
+  // Developer row helper
+  Widget _buildDevRow(
+    String avatarUrl,
+    String name,
+    String username,
+    String bio,
+    bool isFollowed,
+    Color textPrimary,
+    Color textSecondary,
+    Color borderCol,
+  ) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildDevAvatar(avatarUrl, name, textPrimary, borderCol),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: TextStyle(color: textPrimary, fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '@$username',
+                  style: TextStyle(color: textSecondary, fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  bio,
+                  style: TextStyle(color: textSecondary, fontSize: 12, height: 1.3),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                if (isFollowed) {
+                  _followedUsernames.remove(username);
+                } else {
+                  _followedUsernames.add(username);
+                  Provider.of<AppState>(context, listen: false).toggleFollowUser(username);
+                }
+              });
+            },
+            style: TextButton.styleFrom(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              side: BorderSide(color: isFollowed ? borderCol : AppTheme.primaryBlue, width: 1),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            ),
+            child: Text(
+              isFollowed ? 'Following' : 'Follow',
               style: TextStyle(
-                color: isSelected ? AppTheme.primaryBlue : (isDark ? AppTheme.darkTextSecondary : AppTheme.lightTextSecondary),
-                fontSize: 13,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                color: isFollowed ? textSecondary : AppTheme.primaryBlue,
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 4),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 150),
-              width: 16,
-              height: 2,
-              color: isSelected ? AppTheme.primaryBlue : Colors.transparent,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   // Render matching Developers
   Widget _buildDevsResults(Color textPrimary, Color textSecondary, Color borderCol) {
-    final filteredDevs = _mockDevelopers.where((dev) {
-      final name = dev['name']!.toLowerCase();
-      final username = dev['username']!.toLowerCase();
-      final bio = dev['bio']!.toLowerCase();
+    if (_isLoadingDevs) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppTheme.primaryBlue),
+        ),
+      );
+    }
+
+    final filteredDevs = _dbDevelopers.where((dev) {
+      final name = (dev['name'] ?? '').toString().toLowerCase();
+      final username = (dev['username'] ?? '').toString().toLowerCase();
+      final bio = (dev['bio'] ?? '').toString().toLowerCase();
       return name.contains(_searchQuery) || username.contains(_searchQuery) || bio.contains(_searchQuery);
     }).toList();
 
@@ -207,86 +430,13 @@ class _SearchScreenState extends State<SearchScreen> {
       itemCount: filteredDevs.length,
       itemBuilder: (context, index) {
         final dev = filteredDevs[index];
-        final username = dev['username']!;
+        final username = dev['username'] ?? '';
         final isFollowed = _followedUsernames.contains(username);
+        final name = dev['name'] ?? 'Developer';
+        final bio = dev['bio'] ?? '';
+        final avatarUrl = dev['avatar_url'] ?? '';
 
-        return Container(
-          padding: const EdgeInsets.symmetric(vertical: 12),
-          decoration: BoxDecoration(
-            border: Border(bottom: BorderSide(color: borderCol, width: 0.5)),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Avatar
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: borderCol,
-                  shape: BoxShape.circle,
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  dev['avatar']!,
-                  style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Meta info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      dev['name']!,
-                      style: TextStyle(color: textPrimary, fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      '@$username',
-                      style: TextStyle(color: textSecondary, fontSize: 12),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      dev['bio']!,
-                      style: TextStyle(color: textSecondary, fontSize: 12, height: 1.3),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 8),
-              // Follow toggle button
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    if (isFollowed) {
-                      _followedUsernames.remove(username);
-                    } else {
-                      _followedUsernames.add(username);
-                      // Update main app stats context
-                      Provider.of<AppState>(context, listen: false).toggleFollowUser(username);
-                    }
-                  });
-                },
-                style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                  minimumSize: Size.zero,
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  side: BorderSide(color: isFollowed ? borderCol : AppTheme.primaryBlue, width: 1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                ),
-                child: Text(
-                  isFollowed ? 'Following' : 'Follow',
-                  style: TextStyle(
-                    color: isFollowed ? textSecondary : AppTheme.primaryBlue,
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
+        return _buildDevRow(avatarUrl, name, username, bio, isFollowed, textPrimary, textSecondary, borderCol);
       },
     );
   }
@@ -325,26 +475,7 @@ class _SearchScreenState extends State<SearchScreen> {
   // Render matching Projects
   Widget _buildProjectsResults(AppState appState, Color textSecondary) {
     final userProjects = appState.projects;
-    // For demonstration, let's include some public database search projects
-    final allMockProjects = [
-      ...userProjects,
-      Project(
-        id: "p_search_1",
-        title: "KernelRust",
-        description: "A sandbox environment containing Rust modules compiling directly within native Linux kernels.",
-        techStack: ["Rust", "Linux Kernel", "C"],
-        githubUrl: "https://github.com",
-        demoUrl: "https://github.com",
-      ),
-      Project(
-        id: "p_search_2",
-        title: "Zenith GL",
-        description: "High-performance procedural GPU compiler written completely using Typescript and raw WebGL pipeline models.",
-        techStack: ["TypeScript", "WebGL", "GPU Shaders"],
-        githubUrl: "https://github.com",
-        demoUrl: "https://github.com",
-      ),
-    ];
+    final allMockProjects = userProjects;
 
     final filteredProjects = allMockProjects.where((proj) {
       final title = proj.title.toLowerCase();
@@ -388,6 +519,51 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class SmallUnderlineTabIndicator extends Decoration {
+  final Color color;
+  final double width;
+  final double strokeWidth;
+
+  const SmallUnderlineTabIndicator({
+    required this.color,
+    this.width = 16.0,
+    this.strokeWidth = 2.0,
+  });
+
+  @override
+  BoxPainter createBoxPainter([VoidCallback? onChanged]) {
+    return _SmallUnderlinePainter(this, onChanged);
+  }
+}
+
+class _SmallUnderlinePainter extends BoxPainter {
+  final SmallUnderlineTabIndicator decoration;
+
+  _SmallUnderlinePainter(this.decoration, VoidCallback? onChanged) : super(onChanged);
+
+  @override
+  void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
+    final size = configuration.size;
+    if (size == null) return;
+
+    final xOffset = offset.dx + (size.width - decoration.width) / 2;
+    final yOffset = offset.dy + size.height - decoration.strokeWidth;
+
+    final paint = Paint()
+      ..color = decoration.color
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.fill;
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(xOffset, yOffset, decoration.width, decoration.strokeWidth),
+        const Radius.circular(1),
+      ),
+      paint,
     );
   }
 }
