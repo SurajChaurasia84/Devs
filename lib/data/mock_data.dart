@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -299,6 +300,35 @@ class AppState extends ChangeNotifier {
         debugPrint('Error updating profile in Supabase: $e');
       }
     }
+  }
+
+  Future<String> uploadProfileImage(File file, {required bool isProfile}) async {
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null) throw Exception("User not authenticated.");
+
+    final fileExtension = file.path.split('.').last.toLowerCase();
+    final mimeType = fileExtension == 'jpg' ? 'image/jpeg' : 'image/$fileExtension';
+    final folder = isProfile ? 'avatars' : 'banners';
+    // Path is strictly folder/userId.extension to overwrite the existing file
+    final path = '$folder/${user.id}.$fileExtension';
+
+    await Supabase.instance.client.storage
+        .from('avatars')
+        .upload(
+          path,
+          file,
+          fileOptions: FileOptions(
+            upsert: true,
+            contentType: mimeType,
+          ),
+        );
+
+    final baseUrl = Supabase.instance.client.storage
+        .from('avatars')
+        .getPublicUrl(path);
+
+    // Append cache-buster query parameter so Flutter's Image.network reloads the fresh image
+    return '$baseUrl?v=${DateTime.now().millisecondsSinceEpoch}';
   }
 
   Future<bool> checkAndLoadProfile(String userId) async {
