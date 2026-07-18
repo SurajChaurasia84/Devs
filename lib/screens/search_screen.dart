@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/user_avatar.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/mock_data.dart';
@@ -61,59 +62,12 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildDevAvatar(String avatarUrl, String name, Color textPrimary, Color borderCol) {
-    final firstLetter = name.isNotEmpty ? name[0].toUpperCase() : 'D';
-    
-    if (avatarUrl.isEmpty) {
-      return Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: borderCol,
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          firstLetter,
-          style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-      );
-    } else if (avatarUrl.length == 1) {
-      return Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: borderCol,
-          shape: BoxShape.circle,
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          avatarUrl.toUpperCase(),
-          style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
-        ),
-      );
-    } else {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Image.network(
-          avatarUrl,
-          width: 40,
-          height: 40,
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              width: 40,
-              height: 40,
-              color: borderCol,
-              alignment: Alignment.center,
-              child: Text(
-                firstLetter,
-                style: TextStyle(color: textPrimary, fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            );
-          },
-        ),
-      );
-    }
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return UserAvatar(
+      avatarUrl: avatarUrl.isEmpty ? (name.isNotEmpty ? name[0] : 'D') : avatarUrl,
+      size: 40,
+      isDark: isDark,
+    );
   }
 
   @override
