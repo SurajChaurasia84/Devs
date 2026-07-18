@@ -219,21 +219,13 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            // Minimal Devs logo branding
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryBlue,
-                borderRadius: BorderRadius.circular(6),
-              ),
-              child: Text(
-                'D',
-                style: GoogleFonts.outfit(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 16,
-                  letterSpacing: 0.5,
-                ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(6),
+              child: Image.asset(
+                'assets/icon.png',
+                width: 26,
+                height: 26,
+                fit: BoxFit.cover,
               ),
             ),
             const SizedBox(width: 8),
