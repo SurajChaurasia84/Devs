@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/user_avatar.dart';
 import 'package:lucide_icons_flutter/lucide_icons.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -129,23 +130,11 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            // User initials avatar placeholder
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: isDark ? AppTheme.darkBorder : AppTheme.lightBorder,
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                appState.currentUser.avatarUrl,
-                                style: TextStyle(
-                                  color: textPrimary,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                ),
-                              ),
+                            // User initials or profile image avatar
+                            UserAvatar(
+                              avatarUrl: appState.currentUser.avatarUrl,
+                              size: 32,
+                              isDark: isDark,
                             ),
                             const SizedBox(width: 12),
                             // Text Input field
